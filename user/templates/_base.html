@@ -1423,44 +1423,27 @@
   </nav>
 
 
+  {% block path %}
+  {% endblock %}
 
 
-
-
-
-
-
-  
-    {% comment %} <div class="top-header">
-        <span class="heading"><a href="/">Grocery List</a></span>
-        <ul>
-            {% block navbar %}
-            {% endblock %}
-        </ul>
-    </div> {% endcomment %}
-
-    {% comment %} {% if messages %}
-        <div class="messages">
-        {% for message in messages %}
-            <span{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</span>
-        {% endfor %}
+  {% if messages %}
+    {% for message in messages %}
+      {% if message.tags == 'success' %}
+        <div class="alert alert-success alert-dismissible message" role="alert">
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          {{ message }}
         </div>
-    {% endif %} {% endcomment %}
+      {% elif message.tags == 'error' %}
+        <div class="alert alert-danger alert-dismissible message" role="alert">
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          {{ message }}
+        </div>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
 
-    {% comment %} {% if form.errors %}
-        {% for field in form %}
-            {% for error in field.errors %}
-                <div class="messages">
-                    <span class="error">{{ error|escape }}</span>
-                </div>
-            {% endfor %}
-        {% endfor %}
-        {% for error in form.non_field_errors %}
-            <div class="messages">
-                <span class="error">{{ error|escape }}</span>
-            </div>
-        {% endfor %}
-    {% endif %} {% endcomment %}
+
 
   {% block content %}
   {% endblock %}

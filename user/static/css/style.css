@@ -403,6 +403,24 @@
   background-color: var(--backgroundColor);
 }
 
+.message {
+  padding: 0px;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+}
+
+.message ul {
+  list-style-type: none;
+  margin: 0;
+}
+
+.message button {
+  margin: 0;
+  padding: 5px !important;
+  --bs-btn-close-focus-shadow: none;
+}
+
 
 /* carousel */
 .carousel{
