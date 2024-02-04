@@ -39,6 +39,7 @@ class CustomUserChangeForm(UserChangeForm):
       user.save()
     return user
 
+# for adding custom fields in signup form using allauth
 class CustomSignupForm(SignupForm):
   full_name = forms.CharField(max_length=50, label='Full Name', required=True)
   mobile = forms.CharField(max_length=10, label='Mobile', required=True)
