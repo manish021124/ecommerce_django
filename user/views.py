@@ -4,10 +4,23 @@ from django.views.generic import TemplateView
 from allauth.account.views import SignupView, LoginView
 from .forms import CustomSignupForm
 from django.contrib import messages
+from django.views.generic import ListView
+from products.models import Product
 
 # Create your views here.
-class HomePageView(TemplateView):
+class HomePageView(ListView):
+  model = Product
+  context_object_name = 'product_list'
   template_name = 'home.html'
+
+  def get_context_data(self, **kwargs):
+    context = super().get_context_data(**kwargs)
+    for product in context['product_list']:
+      if product.images.exists():
+        product.primary_image_url = product.images.first().image.url
+      else:
+        product.primary_image_url = None
+    return context
 
 
 class RegisterPage(TemplateView):
