@@ -4,6 +4,9 @@
 
 {% block content %}
   <div class="product-detail">
+    {% for image in product.images.all %}
+      <img class="productimage" src="{{ image.image.url}}" alt="{{ product.name }}">
+    {% endfor %}
     <h2><a href="">{{ product.name }}</a></h2>
     <p>Description: {{ product.description }}</p>
     <p>Price: {{ product.price }}</p>

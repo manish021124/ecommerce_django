@@ -38,4 +38,11 @@ class Product(models.Model):
   def get_absolute_url(self):
     return reverse('product_detail', args=[str(self.id)])
   
+
+class ProductImage(models.Model):
+  product = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)
+  image = models.ImageField(upload_to='images/')
+
+  def __str__(self):
+    return f"Image for {self.product.name}"
   

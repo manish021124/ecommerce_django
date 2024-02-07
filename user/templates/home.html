@@ -5,14 +5,14 @@
 
 {% block content %}
   <h1>Homepage</h1>
-  {% comment %} {% if user.is_authenticated %}
-    Hi {{ user.email }}!
-    <p>
-      <a href="{% url 'account_logout' %}">Log Out</a>
-    </p>
-  {% else %}
-    <p>You are not logged in</p>
-    <a href="{% url 'account_login' %}">Log In</a>
-    <a href="{% url 'account_signup' %}">Sign Up</a>
-  {% endif %}  {% endcomment %}
+  {% for product in product_list %}
+    <div>
+      {% if product.primary_image_url %}
+        <img src="{{ product.primary_image_url }}" alt="{{ product.name }}">
+      {% else %}
+        <img src="{% static 'images/placeholder.png' %}" alt="Placeholder Image">
+      {% endif %}
+      <h2><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h2>
+    </div>
+  {% endfor %}
 {% endblock content %}
