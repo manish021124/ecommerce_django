@@ -5,7 +5,7 @@ from allauth.account.views import SignupView, LoginView
 from .forms import CustomSignupForm
 from django.contrib import messages
 from django.views.generic import ListView
-from products.models import Product
+from products.models import Product, Category
 
 # Create your views here.
 class HomePageView(ListView):
@@ -15,6 +15,9 @@ class HomePageView(ListView):
 
   def get_context_data(self, **kwargs):
     context = super().get_context_data(**kwargs)
+    categories = Category.objects.filter(parent__isnull=True)
+    context['categories'] = categories
+
     for product in context['product_list']:
       if product.images.exists():
         product.primary_image_url = product.images.first().image.url
