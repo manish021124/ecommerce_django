@@ -15,14 +15,22 @@ class HomePageView(ListView):
 
   def get_context_data(self, **kwargs):
     context = super().get_context_data(**kwargs)
-    categories = Category.objects.filter(parent__isnull=True)
-    context['categories'] = categories
 
+    # for displaying discounted amount
+    products = context['product_list']
+
+    for product in products:
+      if product.discount_percentage is not None and product.discount_percentage > 0:
+        discount_amount = (product.price * product.discount_percentage) / 100
+        product.discount_amount = discount_amount        
+ 
+    # displaying images
     for product in context['product_list']:
       if product.images.exists():
         product.primary_image_url = product.images.first().image.url
       else:
         product.primary_image_url = None
+
     return context
 
 

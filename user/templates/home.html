@@ -39,7 +39,9 @@
           <div class="col-6 col-sm-4 col-md-3 col-lg-2">
             <a href="{{ product.get_absolute_url }}">
               <div class="card">
-                <button type="button" class="discount-percent">{{ product.discount_percentage }} off</button>
+                {% if product.discount_percentage %}
+                  <button type="button" class="discount-percent">{{ product.discount_percentage }}% off</button>
+                {% endif %}
                 <div class="card-img d-flex align-items-center">
                   {% if product.primary_image_url %}
                     <img src="{{ product.primary_image_url }}" class="img-fluid" alt="{{ product.name }}">
@@ -50,7 +52,9 @@
                 <div class="card-body">
                   <h4 class="card-title">{{ product.name }}</h4>
                   <p class="card-text">
-                    <span class="discount">Rs. 1,000</span>
+                    {% if product.discount_amount %}
+                      <span class="discount">{{ product.discount_amount }}</span>
+                    {% endif %}
                     <span class="price">{{ product.price }}</span>
                   </p>
                 </div>
