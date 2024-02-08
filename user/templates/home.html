@@ -52,10 +52,12 @@
                 <div class="card-body">
                   <h4 class="card-title">{{ product.name }}</h4>
                   <p class="card-text">
-                    {% if product.discount_amount %}
-                      <span class="discount">{{ product.discount_amount }}</span>
+                    {% if product.discount_percentage %}
+                      <span class="discount">{{ product.price }}</span>
+                      <span class="price">{{ product.total_amount }}</span>
+                    {% else %}
+                      <span class="price">{{ product.price }}</span>
                     {% endif %}
-                    <span class="price">{{ product.price }}</span>
                   </p>
                 </div>
               </div>
@@ -65,10 +67,6 @@
       </div>
     </div>
   </div>
-
- 
-
-
   
 </section>
 

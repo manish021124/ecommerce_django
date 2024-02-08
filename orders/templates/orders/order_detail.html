@@ -1,0 +1,43 @@
+{% extends '_base.html' %}
+
+{% block title %}Order Detail{% endblock %}
+
+{% block content %}
+  <h1>Order Detail</h1>
+  <p><strong>Order Number:</strong> {{ order.order_number }} </p>
+  <p><strong>Date Ordered:</strong> {{ order.date_ordered }}</p>
+  <p><strong>Status:</strong> {{ order.status }}</p>
+
+  <h2>Order Items</h2>
+
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Product Name</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th>Discount Percent</th>
+        <th>Subtotal</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in order.items.all %}
+        <tr>
+          <td><a href="{% url 'order_item_detail' item.pk %}">{{ item.product.name }}</a></td>
+          <td>{{ item.quantity }}</td>
+          <td>{{ item.product.price }}</td>
+          <td>{{ item.product.discount_percentage }}</td>
+          <td>{{ item.price }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr>
+        <th>Total Amount</th>
+        <td colspan="3"></td>
+        <td> {{ order.total_amount }} </td>
+      </tr>
+    </tfoot>
+  </table>
+
+{% endblock %}

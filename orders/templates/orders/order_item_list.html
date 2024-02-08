@@ -1,0 +1,33 @@
+{% extends '_base.html' %}
+
+{% block title %}Order Item List{% endblock %}
+
+{% block content %}
+  <h1>Order Item List</h1>
+  {% if order_items %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Product Name</th>
+          <th>Quantity</th>
+          <th>Price</th>
+          <th>Subtotal</th>
+          <th>Order</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in order_items %}
+          <tr>
+            <td><a href="{% url 'order_item_detail' item.pk %}">{{ item.product.name }}</a></td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.price }}</td>
+            <td>{{ item.subtotal }}</td>
+            <td><a href="{% url 'order_detail' item.order.id %}">{{ item.order.order_number }}</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p>No order items found.</p>
+  {% endif %}
+{% endblock %}
