@@ -5,6 +5,12 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 # Create your models here.
 class Category(models.Model):
+  id = models.UUIDField(
+    primary_key = True,
+    default = uuid.uuid4,
+    editable = False
+  )
+
   name = models.CharField(max_length=255)
   description = models.TextField(blank=True)
   parent = models.ForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
@@ -40,6 +46,12 @@ class Product(models.Model):
   
 
 class ProductImage(models.Model):
+  id = models.UUIDField(
+    primary_key = True,
+    default = uuid.uuid4,
+    editable = False
+  )
+
   product = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)
   image = models.ImageField(upload_to='images/')
 

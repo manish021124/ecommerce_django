@@ -24,11 +24,10 @@ class Order(models.Model):
     default = uuid.uuid4,
     editable = False
   )
-
   user = models.ForeignKey(User, on_delete=models.CASCADE)
   date_ordered = models.DateTimeField(default=now)
   status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
-  total_amount = models.DecimalField(max_digits=10, decimal_places=2, editable=False)
+  total_amount = models.DecimalField(max_digits=10, decimal_places=2)
   order_number = models.CharField(max_length=20, unique=True, editable=False)
 
   def __str__(self):
@@ -38,8 +37,8 @@ class Order(models.Model):
     return reverse('order_detail', args=[str(self.id)])
 
   def calculate_total_amount(self):
-    total = sum(item.subtotal() for item in self.items.all())
-    return total
+    total_amount = self.items.aggregate(total_amount=Sum('subtotal'))['total_amount']
+    return total_amount or 0
 
   # ensures order_number is populated with unique order number
   def save(self, *args, **kwargs):
@@ -60,12 +59,15 @@ def generate_order_number():
   
 
 class OrderItem(models.Model):
-  # add UUID here too
-
+  id = models.UUIDField(
+    primary_key = True,
+    default = uuid.uuid4,
+    editable = False
+  )
   order = models.ForeignKey(Order, related_name='items', on_delete=models.CASCADE)
   product = models.ForeignKey(Product, related_name='order_items', on_delete=models.CASCADE)
   quantity = models.PositiveIntegerField(default=1)
-  price = models.DecimalField(max_digits=10, decimal_places=2, editable=False)
+  price = models.DecimalField(max_digits=10, decimal_places=2)
 
   def __str__(self):
     return f"{self.quantity} x {self.product.name} - {self.price}"
@@ -78,7 +80,7 @@ class OrderItem(models.Model):
     if not self.quantity:
       self.quantity = self.product.stock
 
-    # ensuer quantity doesn't exceed available stock
+    # ensure quantity doesn't exceed available stock
     if self.quantity > self.product.stock:
       self.quantity = self.product.stock
 

@@ -24,3 +24,29 @@ function nightMode(){
     gyapuHead.src = "/static/images/gyapu-header-lightmode.svg";
   }
 }
+
+// increment of quantity
+function incrementQuantity(stock) {
+  var button = event.target;
+  var uuid = button.getAttribute('data-uuid');
+  var quantityElement = document.getElementById('quantity' + uuid);
+  var quantityInput = document.getElementById('quantity_input' + uuid);
+  var currentQuantity = parseInt(quantityElement.innerText);
+  if(currentQuantity < stock) {
+    quantityElement.innerText = currentQuantity + 1;
+    quantityInput.value = currentQuantity + 1;
+  }  
+}
+
+// decrement of quantity
+function decrementQuantity() {
+  var button = event.target;
+  var uuid = button.getAttribute('data-uuid');
+  var quantityElement = document.getElementById('quantity' + uuid);
+  var quantityInput = document.getElementById('quantity_input' + uuid);
+  var currentQuantity = parseInt(quantityElement.innerText);
+  if (currentQuantity > 1) {
+    quantityElement.innerText = currentQuantity - 1;
+    quantityInput.value = currentQuantity - 1;
+  }
+}

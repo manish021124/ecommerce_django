@@ -18,11 +18,10 @@ class HomePageView(ListView):
 
     # for displaying discounted amount
     products = context['product_list']
-
     for product in products:
       if product.discount_percentage is not None and product.discount_percentage > 0:
         total_amount = product.price - ((product.price * product.discount_percentage) / 100)
-        product.total_amount = total_amount        
+        product.total_amount = total_amount
  
     # displaying images
     for product in context['product_list']:

@@ -254,37 +254,46 @@
             {% for category in categories %}
               <li class="nav-item dropdown">
                 <a class="nav-link dropbtn" href="#">{{ category.name }}</a>
-                {% for child in category.children.all %}
+                {% if category.children.exists %}
                   <ul class="dropdown-menu">
-                    <li class="dropleft">
-                      <a class="dropdown-item dropbtn" href="#">
-                        {{ child.name }}
+                    {% for child in category.children.all %}
+                      <li class="dropleft">
+                        <a class="dropdown-item dropbtn" href="#">
+                          {{ child.name }}
+                          {% if child.children.exists %}
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
+                              class="bi bi-chevron-right" viewBox="0 0 16 16">
+                              <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 
+                                                    6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 
+                                                    2.354a.5.5 0 0 1 0-.708z" />
+                            </svg>
+                          {% endif %}
+                        </a>
                         {% if child.children.exists %}
-                          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
-                            class="bi bi-chevron-right" viewBox="0 0 16 16">
-                            <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 
-                                                  6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 
-                                                  2.354a.5.5 0 0 1 0-.708z" />
-                          </svg>
+                          <ul class="dropleft-menu">
+                            {% for subchild in child.children.all %}
+                              <li><a class="dropdown-item" href="#">{{ subchild.name }}</a>
+
+                                <!-- IF NEEDED -->
+
+                                {% comment %} 
+                                  {% if subchild.children.exists %}
+                                  <ul>
+                                    {% for subsubchild in subchild.children.all %}
+                                      <li>{{ subsubchild.name }}</li>
+                                    {% endfor %} 
+                                  </ul>
+                                  {% endif %}
+                                {% endcomment %}
+
+                              </li>
+                            {% endfor %}
+                          </ul>
                         {% endif %}
-                      </a>
-                      {% for subchild in child.children.all %}
-                        <ul class="dropleft-menu">
-                          <li><a class="dropdown-item" href="#">{{ subchild.name }}</a>
-
-                            <!-- IF NEEDED -->
-
-                            {% comment %} {% for subsubchild in subchild.children.all %}
-                              <ul>
-                                <li>{{ subsubchild.name }}</li>
-                              </ul>
-                            {% endfor %} {% endcomment %}
-                          </li>
-                        </ul>
-                      {% endfor %}
-                    </li>
+                      </li>
+                    {% endfor %}
                   </ul>
-                {% endfor %}
+                {% endif %}
               </li>
             {% endfor %}
           </ul>
@@ -293,11 +302,6 @@
     </div>
 
   </nav>
-
-
-  {% block path %}
-  {% endblock %}
-
 
   {% if messages %}
     {% for message in messages %}

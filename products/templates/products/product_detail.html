@@ -11,7 +11,21 @@
     <p>Description: {{ product.description }}</p>
     <p>Price: {{ product.price }}</p>
     <p>Discount percentage: {{ product.discount_percentage }}</p>
-    <p>Stock: {{ product.stock }}</p>
+    <p>Quantity: 
+
+
+      <button class="btn btn-sm btn-primary" onclick="decrementQuantity()" data-uuid="{{ product.pk }}">-</button>
+      <span id="quantity{{ product.pk }}">1</span>
+      <button class="btn btn-sm btn-primary" onclick="incrementQuantity({{ product.stock }})" data-uuid="{{ product.pk }}">+</button>
+
+    </p>
     <p>Category: {{ product.category }}</p>
   </div>
+
+
+  <form method="post" action={% url 'add_to_cart' product.id %}>
+    {% csrf_token %}
+    <input type="hidden" id="quantity_input{{ product.pk }}" name="quantity" value="1">
+    <button type="submit">Add to Cart</button>
+  </form>
 {% endblock content %}

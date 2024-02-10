@@ -1,8 +1,15 @@
+import uuid
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 # Create your models here.
 class CustomUser(AbstractUser):
+  id = models.UUIDField(
+    primary_key = True,
+    default = uuid.uuid4,
+    editable = False
+  )
+
   # custom signup form fields
   full_name = models.CharField(max_length=50, default='Default Name')
   mobile = models.CharField(max_length=10, blank=False, null=False)

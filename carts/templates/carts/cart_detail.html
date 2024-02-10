@@ -1,0 +1,38 @@
+{% extends '_base.html' %}
+
+{% block title %}Cart Detail{% endblock %}
+
+{% block content %}
+  <h1>Your Shopping Cart</h1>
+  {% if cart_items %}
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Product Name</th>
+          <th>Quantity</th>
+          <th>Subtotal</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in cart_items %}
+          <tr>
+            <td><a href="{% url 'cart_item_detail' item.pk %}">{{ item.product.name }}</a></td>
+            <td>{{ item.quantity }}</td>
+            <td>{{ item.subtotal }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr>
+          <th>Total Amount</th>
+          <td colspan="1"></td>
+          <td> {{ cart_total }} </td>
+        </tr>
+      </tfoot>
+    </table>
+    <a href="">Proceed to Checkout</a>
+  {% else %}
+    <p>Your cart is empty.</p>
+  {% endif %}
+  
+{% endblock %}
