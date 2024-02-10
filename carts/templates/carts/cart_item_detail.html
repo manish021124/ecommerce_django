@@ -10,7 +10,7 @@
     <span id="quantity{{ cart_item.pk }}">{{ cart_item.quantity }}</span>
     <button class="btn btn-sm btn-primary" onclick="incrementQuantity({{ cart_item.product.stock }})" data-uuid="{{ cart_item.pk }}">+</button>
   </p>
-  <p>Price: {{ cart_item.product.price }}</p>
+  <p>Price: {{ cart_item.price }}</p>
   <p>Subtotal: {{ cart_item.subtotal }}</p>
 
   <form action="{% url 'update_cart_item' cart_item.pk %}" method="POST">

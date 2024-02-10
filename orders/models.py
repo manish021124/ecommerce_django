@@ -6,6 +6,7 @@ from products.models import Product
 from django.utils.timezone import now
 from django.utils.crypto import get_random_string
 from django.db.models import Sum
+from django.core.validators import MaxValueValidator
 
 User = get_user_model()
 
@@ -68,14 +69,14 @@ class OrderItem(models.Model):
   product = models.ForeignKey(Product, related_name='order_items', on_delete=models.CASCADE)
   quantity = models.PositiveIntegerField(default=1)
   price = models.DecimalField(max_digits=10, decimal_places=2)
+  discount_percentage = models.PositiveSmallIntegerField(default=0, validators=[MaxValueValidator(100)])
 
   def __str__(self):
-    return f"{self.quantity} x {self.product.name} - {self.price}"
+    return f"{self.quantity} x {self.product.name} - {self.subtotal()} for {self.order.user.username}"
 
   def subtotal(self):
-    return self.quantity * self.price
-  
-  # copy quantity and price from the related product
+    return  self.quantity * (self.price - ((self.price * self.discount_percentage) / 100))
+
   def save(self, *args, **kwargs):
     if not self.quantity:
       self.quantity = self.product.stock
@@ -83,11 +84,5 @@ class OrderItem(models.Model):
     # ensure quantity doesn't exceed available stock
     if self.quantity > self.product.stock:
       self.quantity = self.product.stock
-
-    if self.product.discount_percentage > 0:
-      total_amount = self.product.price - ((self.product.price * self.product.discount_percentage) / 100)
-      self.price = total_amount * self.quantity
-    else:
-      self.price = self.product.price * self.quantity
 
     super().save(*args, **kwargs)

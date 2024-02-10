@@ -10,7 +10,7 @@
     <h2><a href="">{{ product.name }}</a></h2>
     <p>Description: {{ product.description }}</p>
     <p>Price: {{ product.price }}</p>
-    <p>Discount percentage: {{ product.discount_percentage }}</p>
+    <p>Discount percentage: {{ product.discount_percentage }}%</p>
     <p>Quantity: 
 
 
@@ -19,7 +19,12 @@
       <button class="btn btn-sm btn-primary" onclick="incrementQuantity({{ product.stock }})" data-uuid="{{ product.pk }}">+</button>
 
     </p>
-    <p>Category: {{ product.category }}</p>
+    <p>Category:
+      {% for ancestor in product.category.get_ancestors %}
+        {{ ancestor }} /{% if not forloop.last %}{% endif %}
+      {% endfor %}
+      {{ product.category }}
+    </p>
   </div>
 
 

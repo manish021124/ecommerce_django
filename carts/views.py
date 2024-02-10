@@ -36,6 +36,11 @@ class AddToCartView(View):
   def post(self, request, product_id):
     product = get_object_or_404(Product, pk=product_id)
     quantity = int(request.POST.get('quantity', 1))
+    
+    # fetch price and discount_percentage from Product 
+    price = product.price
+    discount_percentage = product.discount_percentage
+
     # get user's Cart if exists else creates one
     cart, _ = Cart.objects.get_or_create(user=request.user)
 
@@ -47,7 +52,7 @@ class AddToCartView(View):
         cart_item.save()
         messages.success(request, f"{product.name} quantity updated in your cart.")
       else:
-        CartItem.objects.create(cart=cart, product=product, quantity=quantity)
+        CartItem.objects.create(cart=cart, product=product, quantity=quantity, price=price, discount_percentage=discount_percentage)
         messages.success(request, f"{product.name} has been added to your cart.")
     except Exception as e:
       messages.error(request, f"Failed to add {product.name} to your cart. Error: {str(e)}")
@@ -77,6 +82,11 @@ class DeleteCartItemView(View):
 
     try:
       cart_item.delete()
+      cart = cart_item.cart 
+      # check if cart becomes empty and delete it if it does
+      if cart.items.count() == 0:
+        cart.delete()
+
       messages.success(request, f"{cart_item.product.name} has been removed from your cart.")
     except Exception as e:
       messages.error(request, f"Failed to remove {cart_item.product.name} from your cart. Error: {str(e)}")
