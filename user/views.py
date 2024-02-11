@@ -15,13 +15,6 @@ class HomePageView(ListView):
 
   def get_context_data(self, **kwargs):
     context = super().get_context_data(**kwargs)
-
-    # for displaying discounted amount
-    products = context['product_list']
-    for product in products:
-      if product.discount_percentage is not None and product.discount_percentage > 0:
-        total_amount = product.price - ((product.price * product.discount_percentage) / 100)
-        product.total_amount = total_amount
  
     # displaying images
     for product in context['product_list']:

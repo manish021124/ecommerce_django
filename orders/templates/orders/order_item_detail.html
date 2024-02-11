@@ -4,11 +4,11 @@
 
 {% block content %}
   <h1>Order Item Detail</h1>
-  <p><strong>Product Name: </strong><a href="{% url 'product_detail' order_item.product.id %}"> {{ order_item.product.name }} </a></p>
+  <p><strong>Product Name: </strong><a href="{% url 'product_detail' order_item.product.id %}"> {{ order_item.product }} </a></p>
   <p><strong>Quantity:</strong> {{ order_item.quantity }}</p>
   <p><strong>Price:</strong> {{ order_item.price }}</p>
   <p><strong>Discount:</strong> {{ order_item.discount_percentage }}%</p>
-  <p><strong>Total Amount:</strong> {{ order_item.price }}</p>
+  <p><strong>Total Amount:</strong> {{ order_item.subtotal }}</p>
   <p><strong>Order Number: </strong><a href="{% url 'order_detail' order_item.order.id %}"> {{ order_item.order.order_number }}</a></p>
   <p><strong>Date Ordered:</strong> {{ order_item.order.date_ordered }}</p>
   <p><strong>Status:</strong> {{ order_item.order.status }}</p>

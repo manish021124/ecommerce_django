@@ -3,34 +3,35 @@
 {% block title %}{{ product.name }}{% endblock title %}
 
 {% block content %}
-  <div class="product-detail">
+  <div class="product-detail mb-3">
     {% for image in product.images.all %}
       <img class="productimage" src="{{ image.image.url}}" alt="{{ product.name }}">
     {% endfor %}
-    <h2><a href="">{{ product.name }}</a></h2>
+    <h2><a href="#">{{ product.name }}</a></h2>
     <p>Description: {{ product.description }}</p>
     <p>Price: {{ product.price }}</p>
-    <p>Discount percentage: {{ product.discount_percentage }}%</p>
+    {% if product.discount_percentage > 0 %}
+      <p>Discount: {{ product.discount_percentage }}%</p>
+      <p>Total Amount: {{ product.total_amount }}</p>
+    {% endif %}
     <p>Quantity: 
-
-
       <button class="btn btn-sm btn-primary" onclick="decrementQuantity()" data-uuid="{{ product.pk }}">-</button>
       <span id="quantity{{ product.pk }}">1</span>
       <button class="btn btn-sm btn-primary" onclick="incrementQuantity({{ product.stock }})" data-uuid="{{ product.pk }}">+</button>
-
     </p>
     <p>Category:
       {% for ancestor in product.category.get_ancestors %}
-        {{ ancestor }} /{% if not forloop.last %}{% endif %}
+        {{ ancestor }} /
       {% endfor %}
       {{ product.category }}
     </p>
+
+    <form method="post" action={% url 'add_to_cart' product.pk %}>
+      {% csrf_token %}
+      <input type="hidden" id="quantity_input{{ product.pk }}" name="quantity" value="1">
+      <button type="submit" class="btn btn-sm btn-success">Add to Cart</button>
+    </form>
   </div>
 
-
-  <form method="post" action={% url 'add_to_cart' product.id %}>
-    {% csrf_token %}
-    <input type="hidden" id="quantity_input{{ product.pk }}" name="quantity" value="1">
-    <button type="submit">Add to Cart</button>
-  </form>
+  
 {% endblock content %}

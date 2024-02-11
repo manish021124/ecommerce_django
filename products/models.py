@@ -37,7 +37,6 @@ class Product(models.Model):
     default = uuid.uuid4,
     editable = False
   )
-
   name = models.CharField(max_length=255)
   description = models.TextField()
   price = models.DecimalField(max_digits=10, decimal_places=2)
@@ -51,6 +50,9 @@ class Product(models.Model):
   # for setting canonical url 
   def get_absolute_url(self):
     return reverse('product_detail', args=[str(self.id)])
+
+  def total_amount(self):
+    return self.price - ((self.price * self.discount_percentage) / 100)
   
 
 class ProductImage(models.Model):
@@ -59,7 +61,6 @@ class ProductImage(models.Model):
     default = uuid.uuid4,
     editable = False
   )
-
   product = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)
   image = models.ImageField(upload_to='images/')
 

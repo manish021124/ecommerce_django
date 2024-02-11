@@ -13,7 +13,6 @@ class Cart(models.Model):
     default = uuid.uuid4,
     editable = False
   )
-
   user = models.OneToOneField(User, on_delete=models.CASCADE)
 
   def __str__(self):
