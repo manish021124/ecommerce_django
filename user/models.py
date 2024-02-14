@@ -9,7 +9,6 @@ class CustomUser(AbstractUser):
     default = uuid.uuid4,
     editable = False
   )
-
   # custom signup form fields
   full_name = models.CharField(max_length=50, default='Default Name')
   mobile = models.CharField(max_length=10, blank=False, null=False)

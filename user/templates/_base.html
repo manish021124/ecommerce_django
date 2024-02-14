@@ -17,7 +17,7 @@
   <div class="bottom-nav d-block d-lg-none">
     <div class="container-fluid d-flex justify-content-around">
       <div class="home">
-        <a href="#">
+        <a href="{% url 'home' %}">
           <div class="d-flex justify-content-center">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
               class="bi bi-house-door-fill" viewBox="0 0 16 16">
@@ -50,7 +50,7 @@
         </a>
       </div>
       <div class="cart">
-        <a href="#">
+        <a href="{% url 'cart_detail' %}">
           <div class="d-flex justify-content-center">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-cart3"
               viewBox="0 0 16 16">
@@ -220,7 +220,7 @@
           </li>
           <li class="nav-item">
             <div class="tooltip">
-              <a class="nav-link" href="javascript:void(0)">
+              <a class="nav-link" href="{% url 'cart_detail' %}">
                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-cart3"
                   viewBox="0 0 16 16">
                   <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 
@@ -234,17 +234,14 @@
                 <sup class="bg-warning cart-number">0</sup>
               </a>
               <span class="tooltiptext lowernavtooltiptext">
-                <p>There are 0 item in the cart</p>
-                <a href="javascript:void(0)">Continue shopping</a>
+                <p>There are <span class="cart-number">0</span> item in the cart</p>
+                <a href="{% url 'products' %}">Continue shopping</a>
               </span>
             </div>
           </li>
         </ul>
       </div>
     </div>
-
-
-
 
     {% comment %} DISPLAYS CATEGORIES IN NAVBAR DYNAMICALLY {% endcomment %}
     <div class="dropdown-nav">
@@ -302,6 +299,9 @@
     </div>
 
   </nav>
+
+  {% block path %}
+  {% endblock %}
 
   {% if messages %}
     {% for message in messages %}

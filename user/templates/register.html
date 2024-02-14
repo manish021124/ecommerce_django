@@ -229,7 +229,7 @@ Gyapu - Account
       <div class="card-box col-4">
         <div class="login-block py-4 px-3 mx-2">
           <h3>LOGIN</h3>
-          <form method='POST' action="{% url 'account_login' %}">
+          <form method='POST' action="{% url 'account_login' %}?next={{ request.GET.next }}">
             {% csrf_token %}
             <div class="mb-2 mt-3">
               <label for="login" class="form-label">EMAIL</label>

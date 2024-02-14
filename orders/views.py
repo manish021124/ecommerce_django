@@ -36,7 +36,7 @@ class OrderItemDetailView(LoginRequiredMixin, DetailView):
   context_object_name = 'order_item'
 
 
-class CheckOutView(View):
+class CheckOutView(LoginRequiredMixin, View):
   def post(self, request, *args, **kwargs):
     try:
       order = Order.objects.create(user=request.user)

@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Cart, CartItem
 from products.models import Product
 from django.contrib import messages
+from django.http import JsonResponse
 
 # Create your views here.
 class CartDetailView(LoginRequiredMixin, ListView):
@@ -31,7 +32,7 @@ class CartItemDetailView(LoginRequiredMixin, DetailView):
   context_object_name = 'cart_item'
 
 
-class AddToCartView(View):
+class AddToCartView(LoginRequiredMixin, View):
   def post(self, request, product_id):
     product = get_object_or_404(Product, pk=product_id)
     quantity = int(request.POST.get('quantity', 1))
@@ -60,7 +61,7 @@ class AddToCartView(View):
     return redirect('product_detail', pk=product_id)
   
   
-class UpdateCartItemView(View):
+class UpdateCartItemView(LoginRequiredMixin, View):
   def post(self, request, cart_item_id):
     cart_item = get_object_or_404(CartItem, pk=cart_item_id)
     new_quantity = int(request.POST.get('quantity'))
@@ -74,7 +75,7 @@ class UpdateCartItemView(View):
     return redirect('cart_detail')
 
 
-class DeleteCartItemView(View):
+class DeleteCartItemView(LoginRequiredMixin, View):
   def post(self, request, *args, **kwargs):
     cart_item_id = self.kwargs.get('cart_item_id')
     cart_item = get_object_or_404(CartItem, pk=cart_item_id)
@@ -95,3 +96,17 @@ class DeleteCartItemView(View):
 
 
 # add CartDeleteView, CartDeleteAllView
+
+# show number of items in cart
+class GetCartCount(View):
+  def get(self, request, *args, **kwargs):
+    user = request.user
+    if user.is_authenticated:
+      try:
+        cart = Cart.objects.get(user=user)
+        cart_count = cart.items.count()
+        return JsonResponse({'cartCount': cart_count})
+      except Cart.DoesNotExist:
+        return JsonResponse({'cartCount': 0})
+    else:
+      return JsonResponse({'cartCount': 0})

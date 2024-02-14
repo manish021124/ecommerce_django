@@ -59,11 +59,21 @@ class CustomSignupView(SignupView):
 class CustomLoginView(LoginView):
   # redirecting to register page instead of default login page
   def get(self, request, *args, **kwargs):
+    next_url = request.GET.get('next')
+    if next_url:
+      # store the 'next' url in session
+      request.session['next'] = next_url
     return redirect(reverse('register'))
 
   def form_valid(self, form):
     response = super().form_valid(form)
-    return response
+    # after login redirect to the 'next' url if available
+    next_url = self.request.session.get('next')
+    if next_url:
+      del self.request.session['next'] #remove 'next' url from session
+      return redirect(next_url)
+    else:
+      return response
 
   # redirecting to register page on login error
   def form_invalid(self, form):

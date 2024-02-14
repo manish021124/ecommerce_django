@@ -27,11 +27,11 @@ function nightMode(){
 
 // increment of quantity
 function incrementQuantity(stock) {
-  var button = event.target;
-  var uuid = button.getAttribute('data-uuid');
-  var quantityElement = document.getElementById('quantity' + uuid);
-  var quantityInput = document.getElementById('quantity_input' + uuid);
-  var currentQuantity = parseInt(quantityElement.innerText);
+  let button = event.target;
+  let uuid = button.getAttribute('data-uuid');
+  let quantityElement = document.getElementById('quantity' + uuid);
+  let quantityInput = document.getElementById('quantity_input' + uuid);
+  let currentQuantity = parseInt(quantityElement.innerText);
   if(currentQuantity < stock) {
     quantityElement.innerText = currentQuantity + 1;
     quantityInput.value = currentQuantity + 1;
@@ -40,13 +40,29 @@ function incrementQuantity(stock) {
 
 // decrement of quantity
 function decrementQuantity() {
-  var button = event.target;
-  var uuid = button.getAttribute('data-uuid');
-  var quantityElement = document.getElementById('quantity' + uuid);
-  var quantityInput = document.getElementById('quantity_input' + uuid);
-  var currentQuantity = parseInt(quantityElement.innerText);
+  let button = event.target;
+  let uuid = button.getAttribute('data-uuid');
+  let quantityElement = document.getElementById('quantity' + uuid);
+  let quantityInput = document.getElementById('quantity_input' + uuid);
+  let currentQuantity = parseInt(quantityElement.innerText);
   if (currentQuantity > 1) {
     quantityElement.innerText = currentQuantity - 1;
     quantityInput.value = currentQuantity - 1;
   }
 }
+
+// fetch the initial cart count 
+document.addEventListener('DOMContentLoaded', function() {
+  const cartCounts = document.querySelectorAll('.cart-number');
+
+  fetch('/carts/get-cart-count/')
+    .then(response => response.json())
+    .then(data => {
+      cartCounts.forEach(cartCount => {
+        cartCount.textContent = data.cartCount;
+      });
+    })
+    .catch(error => {
+      console.error('Error fetching cart count:', error);
+    });
+});
