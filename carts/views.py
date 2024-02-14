@@ -54,11 +54,21 @@ class AddToCartView(LoginRequiredMixin, View):
       else:
         CartItem.objects.create(cart=cart, product=product, quantity=quantity, price=price, discount_percentage=discount_percentage)
         messages.success(request, f"{product.name} has been added to your cart.")
+      
+      # update product's stock
+      product.stock -= quantity
+      product.save()
+
+      # redirect to product detail page if stock is greater than 0
+      if product.stock > 0:
+        return redirect('product_detail', pk=product_id)
+      else:
+        return redirect('home')
     except Exception as e:
       messages.error(request, f"Failed to add {product.name} to your cart. Error: {str(e)}")
       return redirect('product_detail', pk=product_id)
 
-    return redirect('product_detail', pk=product_id)
+    # return redirect('product_detail', pk=product_id)
   
   
 class UpdateCartItemView(LoginRequiredMixin, View):
@@ -66,8 +76,14 @@ class UpdateCartItemView(LoginRequiredMixin, View):
     cart_item = get_object_or_404(CartItem, pk=cart_item_id)
     new_quantity = int(request.POST.get('quantity'))
     
-    cart_item.quantity = new_quantity
     try:
+      quantity_difference = new_quantity - cart_item.quantity
+      # update product's stock
+      product = cart_item.product
+      product.stock -= quantity_difference
+      product.save()
+      
+      cart_item.quantity = new_quantity
       cart_item.save()
       messages.success(request, f"Quantity of {cart_item.product.name} has been updated in your cart.")
     except Exception as e:
@@ -81,7 +97,14 @@ class DeleteCartItemView(LoginRequiredMixin, View):
     cart_item = get_object_or_404(CartItem, pk=cart_item_id)
 
     try:
+      product = cart_item.product
+      quantity_before_deletion = cart_item.quantity
+
       cart_item.delete()
+      # update product's stock
+      product.stock += quantity_before_deletion
+      product.save()
+
       cart = cart_item.cart 
       # check if cart becomes empty and delete it if it does
       if cart.items.count() == 0:

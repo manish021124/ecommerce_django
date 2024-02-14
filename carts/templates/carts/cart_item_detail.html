@@ -8,7 +8,7 @@
   <p>Quantity: 
     <button class="btn btn-sm btn-primary" onclick="decrementQuantity()" data-uuid="{{ cart_item.pk }}">-</button>
     <span id="quantity{{ cart_item.pk }}">{{ cart_item.quantity }}</span>
-    <button class="btn btn-sm btn-primary" onclick="incrementQuantity({{ cart_item.product.stock }})" data-uuid="{{ cart_item.pk }}">+</button>
+    <button class="btn btn-sm btn-primary" onclick="incrementQuantity({{ cart_item.product.stock }} + {{ cart_item.quantity }})" data-uuid="{{ cart_item.pk }}">+</button>
   </p>
   <p>Price: {{ cart_item.price }}</p>
   <p>Discount: {{ cart_item.discount_percentage }}%</p>

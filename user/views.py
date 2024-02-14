@@ -13,6 +13,10 @@ class HomePageView(ListView):
   context_object_name = 'product_list'
   template_name = 'home.html'
 
+  def get_queryset(self):
+    # retrieve products with stock greater than 0
+    return Product.objects.filter(stock__gt=0)  
+
   def get_context_data(self, **kwargs):
     context = super().get_context_data(**kwargs)
  
