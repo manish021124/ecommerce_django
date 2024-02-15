@@ -17,7 +17,7 @@
     <tbody>
       {% for order in order_list %}
         <tr>
-          <td><a href="{{ order.get_absolute_url }}">{{ order.order_number }}</a></td>
+          <td><a href="{% url 'orders:order_detail' pk=order.pk %}">{{ order.order_number }}</a></td>
           <td>{{ order.date_ordered }}</td>
           <td>{{ order.total_amount }}</td>
           <td>{{ order.status }}</td>

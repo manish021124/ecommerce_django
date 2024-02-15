@@ -34,9 +34,6 @@ class Order(models.Model):
   def __str__(self):
     return f"Order #{self.order_number} - {self.user.username}"
 
-  def get_absolute_url(self):
-    return reverse('order_detail', args=[str(self.id)])
-
   # ensures order_number is populated with unique order number
   def save(self, *args, **kwargs):
     if not self.order_number:

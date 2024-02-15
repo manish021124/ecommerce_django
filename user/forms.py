@@ -19,7 +19,7 @@ class CustomUserCreationForm(UserCreationForm):
     user.save()
     return user
 
-
+#to allow admin to modify details and to include additional fields in user edit form
 class CustomUserChangeForm(UserChangeForm):
   full_name = forms.CharField(max_length=50, label='Full Name', required=True)
   mobile = forms.CharField(max_length=10, label='Mobile', required=True)
@@ -27,10 +27,6 @@ class CustomUserChangeForm(UserChangeForm):
   class Meta:
     model = get_user_model()
     fields = ('email', 'username', 'full_name', 'mobile')
-
-  def __init__(self, *args, **kwargs):
-    super().__init__(*args, **kwargs)
-    self.initial['full_name'] = f"{self.instance.first_name} {self.instance.last_name}".strip()
 
   def save(self, commit=True):
     user = super(CustomUserChangeForm, self).save(commit=False)
@@ -71,7 +67,7 @@ class ProfileForm(forms.ModelForm):
     if self.instance and self.instance.user:
       self.fields['username'].initial = self.instance.user.username
       self.fields['email'].initial = self.instance.user.email
-      self.fields['full_name'].initial = self.instance.user.get_full_name()
+      self.fields['full_name'].initial = self.instance.user.full_name
       self.fields['mobile'].initial = self.instance.user.mobile
 
   def save(self, commit=True):
@@ -80,8 +76,8 @@ class ProfileForm(forms.ModelForm):
       user = self.instance.user
       user.username = self.cleaned_data['username']
       user.email = self.cleaned_data['email']
-      user.set_full_name(self.cleaned_date['full_name'])
-      user.mobile = self.cleaned_date['mobile']
+      user.full_name = self.cleaned_data['full_name']
+      user.mobile = self.cleaned_data['mobile']
       if commit:
         profile.save()
         user.save()

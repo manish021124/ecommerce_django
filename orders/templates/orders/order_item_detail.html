@@ -9,7 +9,7 @@
   <p><strong>Price:</strong> {{ order_item.price }}</p>
   <p><strong>Discount:</strong> {{ order_item.discount_percentage }}%</p>
   <p><strong>Total Amount:</strong> {{ order_item.subtotal }}</p>
-  <p><strong>Order Number: </strong><a href="{% url 'order_detail' order_item.order.id %}"> {{ order_item.order.order_number }}</a></p>
+  <p><strong>Order Number: </strong><a href="{% url 'orders:order_detail' order_item.order.id %}"> {{ order_item.order.order_number }}</a></p>
   <p><strong>Date Ordered:</strong> {{ order_item.order.date_ordered }}</p>
   <p><strong>Status:</strong> {{ order_item.order.status }}</p>
 {% endblock %}

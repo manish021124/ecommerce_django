@@ -67,7 +67,7 @@
         </a>
       </div>
       <div class="profile">
-        <a href="#">
+        <a href="{% url 'profile_detail' %}">
           <div class="d-flex justify-content-center">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
               class="bi bi-person-circle" viewBox="0 0 16 16">
@@ -144,19 +144,30 @@
 
       <div class="accessibilities">
         <div class="d-flex justify-content-end">
-          <div class="d-flex mx-3">
-            <div>
-              {% if user.is_authenticated %}
-                <a href="{% url 'profile_detail' %}">{{ user.username }}</a>
-                |
-                <a href="{% url 'account_logout' %}">Log Out</a>
-              {% else %}
-                <a href="{% url "register" %}">Login/Register</a>
-              {% endif %}
+          {% if user.is_authenticated %}
+            <div class="tooltip mx-3">
+              <a href="{% url 'profile_detail' %}">{{ user.username }}</a>
+              <span class="tooltiptext lowernavtooltiptext py-3 px-0" style="width: 125px">
+                <ul class="m-0" style="list-style: none">
+                  <li class="nav-item py-1">
+                    <a class="nav-link m-0" href="{% url 'profile_detail' %}">Your Profile</a>
+                  </li>
+                  <li class="nav-item py-1">
+                    <a class="nav-link m-0" href="{% url 'orders:order_list' %}">Orders</a>
+                  </li>
+                  <li class="nav-item py-1">
+                    <a class="nav-link m-0" href="{% url 'account_logout' %}">Log Out</a>
+                  </li>
+                </ul>
+              </span>
             </div>
-          </div>
+          {% else %}
+            <div class="d-flex mx-3">
+              <a href="{% url "register" %}">Login/Register</a>
+            </div>
+          {% endif %}
           <div class="tooltip qrtooltip mx-3">
-            <a class="nav-link" href="./register.html">
+            <a class="nav-link" href="#">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-phone"
                 viewBox="0 0 16 16">
                 <path d="M11 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V2a1 1 
