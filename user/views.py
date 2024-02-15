@@ -1,11 +1,13 @@
 from django.urls import reverse_lazy
 from django.shortcuts import redirect, reverse, render
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, DetailView, UpdateView
 from allauth.account.views import SignupView, LoginView
-from .forms import CustomSignupForm
+from .forms import CustomSignupForm, ProfileForm
 from django.contrib import messages
 from django.views.generic import ListView
+from .models import Profile
 from products.models import Product, Category
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
 class HomePageView(ListView):
@@ -88,4 +90,23 @@ class CustomLoginView(LoginView):
       messages.error(self.request, error_message)
 
     return redirect(reverse('register'))
+
+  
+class ProfileDetailView(LoginRequiredMixin, DetailView):
+  model = Profile
+  template_name = 'profile.html'
+  context_object_name = 'profile'
+
+  def get_object(self, queryset=None):
+    return self.request.user.profile
+
+
+class ProfileUpdateView(LoginRequiredMixin, UpdateView):
+  model = Profile
+  form_class = ProfileForm
+  template_name = 'profile_update.html'
+  success_url = '/profile/'
+
+  def get_object(self, queryset=None):
+    return self.request.user.profile
   

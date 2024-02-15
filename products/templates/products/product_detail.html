@@ -15,9 +15,9 @@
       <p>Total Amount: {{ product.total_amount }}</p>
     {% endif %}
     <p>Quantity: 
-      <button class="btn btn-sm btn-primary" onclick="decrementQuantity()" data-uuid="{{ product.pk }}">-</button>
+      <button class="btn btn-sm btn-warning" onclick="decrementQuantity()" data-uuid="{{ product.pk }}">-</button>
       <span id="quantity{{ product.pk }}">1</span>
-      <button class="btn btn-sm btn-primary" onclick="incrementQuantity({{ product.stock }})" data-uuid="{{ product.pk }}">+</button>
+      <button class="btn btn-sm btn-warning" onclick="incrementQuantity({{ product.stock }})" data-uuid="{{ product.pk }}">+</button>
     </p>
     <p>Category:
       {% for ancestor in product.category.get_ancestors %}
@@ -29,7 +29,7 @@
     <form method="post" action={% url 'add_to_cart' product.pk %}>
       {% csrf_token %}
       <input type="hidden" id="quantity_input{{ product.pk }}" name="quantity" value="1">
-      <button type="submit" class="btn btn-sm btn-success">Add to Cart</button>
+      <button type="submit" class="btn btn-sm btn-warning">Add to Cart</button>
     </form>
   </div>
 

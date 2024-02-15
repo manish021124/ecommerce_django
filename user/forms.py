@@ -1,4 +1,5 @@
 from django import forms
+from .models import Profile
 from allauth.account.forms import SignupForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
@@ -53,3 +54,35 @@ class CustomSignupForm(SignupForm):
     user.save()
 
     return user
+
+
+class ProfileForm(forms.ModelForm):
+  username = forms.CharField(max_length=255)
+  email = forms.EmailField()
+  full_name = forms.CharField(max_length=255)
+  mobile = forms.CharField(max_length=10)
+
+  class Meta:
+    model = Profile
+    fields = ['username', 'email', 'full_name', 'mobile', 'birth_date', 'gender']
+
+  def __init__(self, *args, **kwargs):
+    super(ProfileForm, self).__init__(*args, **kwargs)
+    if self.instance and self.instance.user:
+      self.fields['username'].initial = self.instance.user.username
+      self.fields['email'].initial = self.instance.user.email
+      self.fields['full_name'].initial = self.instance.user.get_full_name()
+      self.fields['mobile'].initial = self.instance.user.mobile
+
+  def save(self, commit=True):
+    profile = super(ProfileForm, self).save(commit=False)
+    if self.instance and self.instance.user:
+      user = self.instance.user
+      user.username = self.cleaned_data['username']
+      user.email = self.cleaned_data['email']
+      user.set_full_name(self.cleaned_date['full_name'])
+      user.mobile = self.cleaned_date['mobile']
+      if commit:
+        profile.save()
+        user.save()
+    return profile
