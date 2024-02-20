@@ -2,6 +2,9 @@ import uuid
 from django.db import models
 from django.urls import reverse
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 # Create your models here.
 class Category(models.Model):
@@ -43,6 +46,7 @@ class Product(models.Model):
   discount_percentage = models.PositiveSmallIntegerField(default=0, validators=[MaxValueValidator(100)])
   stock = models.IntegerField(default=0, validators=[MinValueValidator(0)])
   category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='products')
+  store = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'groups__name': 'store'}, default='')
 
   def __str__(self):
     return self.name

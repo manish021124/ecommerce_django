@@ -1,18 +1,19 @@
-{% extends '_base.html' %} 
+{% extends '_base.html' %}
 {% load static %}
-
-{% block title %}Home{% endblock title %} 
+{% block title %}Store Dashboard{% endblock %}
 
 {% block content %}
 
-<section class="feature-list pb-3">
 
-  <!-- top picks -->
+
+<section class="feature-list pb-3">
+  <h1>Welcome to Your Store Dashboard</h1>
+
   <div class="top-picks">
     <div class="container mt-3">
       <div class="row">
         <div class="col-6">
-          <a class="topic" href="#">Top Picks</a>
+          <a class="topic" href="#">Products</a>
         </div>
         <div class="col-6">
           <a href="#" class="btn">Show More</a>
@@ -20,7 +21,7 @@
       </div>
 
       <div class="row">
-        {% for product in product_list %}
+        {% for product in products %}
           <div class="col-6 col-sm-4 col-md-3 col-lg-2">
             <a href="{{ product.get_absolute_url }}">
               <div class="card">
@@ -54,6 +55,4 @@
   </div>
   
 </section>
-
-
-{% endblock content %}
+{% endblock %}

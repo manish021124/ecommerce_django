@@ -1,17 +1,20 @@
 from django.contrib import admin
-from django.contrib.auth import get_user_model
+# from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
-from .models import Profile
-from .forms import CustomUserCreationForm, CustomUserChangeForm
+from .models import CustomUser, Profile
+# from .forms import CustomUserCreationForm, CustomUserChangeForm
 
-# Register your models here.
-CustomUser = get_user_model()
+# CustomUser = get_user_model()
 
 class CustomUserAdmin(UserAdmin):
-  add_form = CustomUserCreationForm
-  form = CustomUserChangeForm
+  # add_form = CustomUserCreationForm
+  # form = CustomUserChangeForm
   model = CustomUser
-  list_display = ['email', 'full_name', 'mobile', 'is_staff', 'is_superuser',]
+  list_display = ['email', 'full_name', 'mobile', 'get_groups', 'is_superuser',]
+
+  def get_groups(self, obj):
+    return ", ".join([group.name for group in obj.groups.all()])
+  get_groups.short_description = 'Groups' # sets colunm header
  
   # fields to be allowed to edit in admin panel
   fieldsets = (
