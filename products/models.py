@@ -47,6 +47,7 @@ class Product(models.Model):
   stock = models.IntegerField(default=0, validators=[MinValueValidator(0)])
   category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='products')
   store = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'groups__name': 'store'}, default='')
+  is_deleted = models.BooleanField(default=False) #soft deletion flag
 
   def __str__(self):
     return self.name
@@ -57,6 +58,11 @@ class Product(models.Model):
 
   def total_amount(self):
     return self.price - ((self.price * self.discount_percentage) / 100)
+
+  # override default delete function
+  def delete(self, using=None, keep_parents=False):
+    self.is_deleted = True
+    self.save()
   
 
 class ProductImage(models.Model):

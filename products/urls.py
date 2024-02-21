@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ProductDetailView, ProductCreateView, ProductUpdateView
+from .views import ProductDetailView, ProductCreateView, ProductUpdateView, ProductDeleteView
 from user.views import HomePageView
 
 urlpatterns = [
@@ -7,4 +7,5 @@ urlpatterns = [
   path('<uuid:pk>', ProductDetailView.as_view(), name='product_detail'),
   path('add/', ProductCreateView.as_view(), name='product_add'),
   path('update/<uuid:pk>/', ProductUpdateView.as_view(), name='product_update'),
+  path('<uuid:pk>/delete', ProductDeleteView.as_view(), name='product_delete'),
 ]

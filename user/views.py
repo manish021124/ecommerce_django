@@ -19,7 +19,7 @@ class HomePageView(ListView):
 
   def get_queryset(self):
     # retrieve products with stock greater than 0
-    return Product.objects.filter(stock__gt=0)  
+    return Product.objects.filter(stock__gt=0, is_deleted=False)  
 
   def get_context_data(self, **kwargs):
     context = super().get_context_data(**kwargs)
@@ -114,9 +114,12 @@ class StoreSignupView(SignupView):
 class StoreDashboard(LoginRequiredMixin, StoreGroupRequiredMixin, TemplateView):
   template_name = 'store/dashboard.html'
 
+  def get_queryset(self):
+    return Product.objects.filter(store=self.request.user, is_deleted=False)  
+
   def get_context_data(self, **kwargs):
     context = super().get_context_data(**kwargs)
-    context['products'] = self.request.user.product_set.all()
+    context['products'] = self.get_queryset()
  
     # displaying images
     for product in context['products']:

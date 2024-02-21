@@ -15,9 +15,13 @@
       <p>Total Amount: {{ product.total_amount }}</p>
     {% endif %}
     <p>Quantity: 
-      <button class="btn btn-sm btn-warning" onclick="decrementQuantity()" data-uuid="{{ product.pk }}">-</button>
-      <span id="quantity{{ product.pk }}">1</span>
-      <button class="btn btn-sm btn-warning" onclick="incrementQuantity({{ product.stock }})" data-uuid="{{ product.pk }}">+</button>
+      {% if is_store_user %}
+        {{ product.stock }}
+      {% else %}
+        <button class="btn btn-sm btn-warning" onclick="decrementQuantity()" data-uuid="{{ product.pk }}">-</button>
+        <span id="quantity{{ product.pk }}">1</span>
+        <button class="btn btn-sm btn-warning" onclick="incrementQuantity({{ product.stock }})" data-uuid="{{ product.pk }}">+</button>
+      {% endif %}
     </p>
     <p>Category:
       {% for ancestor in product.category.get_ancestors %}
@@ -26,11 +30,16 @@
       {{ product.category }}
     </p>
 
-    <form method="post" action={% url 'add_to_cart' product.pk %}>
-      {% csrf_token %}
-      <input type="hidden" id="quantity_input{{ product.pk }}" name="quantity" value="1">
-      <button type="submit" class="btn btn-sm btn-warning">Add to Cart</button>
-    </form>
+    {% if is_store_user %}
+      <a href="{% url 'product_update' product.id %}" class="btn btn-warning">Edit</a>
+      <a href="{% url 'product_delete' pk=product.pk %}" class="btn btn-danger">Delete</a>
+    {% else %}
+      <form method="post" action={% url 'add_to_cart' product.pk %}>
+        {% csrf_token %}
+        <input type="hidden" id="quantity_input{{ product.pk }}" name="quantity" value="1">
+        <button type="submit" class="btn btn-sm btn-warning">Add to Cart</button>
+      </form>
+    {% endif %}
   </div>
 
   

@@ -74,3 +74,7 @@ class OrderItem(models.Model):
 
   def subtotal(self):
     return self.quantity * (self.price - ((self.price * self.discount_percentage) / 100))
+
+  def get_product_name(self):
+    # handling soft-deleted products
+    return self.product.name if not self.product.is_deleted else "Unknown Product"

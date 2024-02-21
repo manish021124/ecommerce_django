@@ -7,7 +7,7 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 class ProductAdmin(admin.ModelAdmin):
-  list_display = ("name", "price", "discount_percentage", "stock", "store")
+  list_display = ("name", "price", "discount_percentage", "stock", "store", "is_deleted")
 
 
 admin.site.register(Category, CategoryAdmin)
