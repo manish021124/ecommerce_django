@@ -3,12 +3,10 @@
 {% block title %}Store Dashboard{% endblock %}
 
 {% block content %}
-
-
-
 <section class="feature-list pb-3">
   <h1>Welcome to Your Store Dashboard</h1>
 
+  {% if products %}
   <div class="top-picks">
     <div class="container mt-3">
       <div class="row">
@@ -53,6 +51,7 @@
       </div>
     </div>
   </div>
+  {% endif %}
   
 </section>
 {% endblock %}

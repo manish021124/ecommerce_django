@@ -9,6 +9,7 @@ from .models import Profile
 from products.models import Product, Category
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import Group
+from products.views import StoreGroupRequiredMixin
 
 # Create your views here.
 class HomePageView(ListView):
@@ -110,7 +111,7 @@ class StoreSignupView(SignupView):
     return response
 
 
-class StoreDashboard(TemplateView):
+class StoreDashboard(LoginRequiredMixin, StoreGroupRequiredMixin, TemplateView):
   template_name = 'store/dashboard.html'
 
   def get_context_data(self, **kwargs):
