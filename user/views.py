@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.views.generic import ListView
 from .models import Profile
 from products.models import Product, Category
+from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import Group
 
@@ -56,7 +57,9 @@ class RegisterPage(TemplateView):
 class CustomerSignupView(SignupView):
   form_class = CustomerSignupForm
   success_url = reverse_lazy('home')
-  template_name = 'register.html'
+  
+  def get(self, request, *args, **kwargs):
+    return redirect(reverse('register'))
 
   def form_valid(self, form):
     response = super().form_valid(form)
@@ -67,38 +70,6 @@ class CustomerSignupView(SignupView):
     return response
 
   # redirecting to register page on signup error
-  def form_invalid(self, form):
-    response = super().form_invalid(form)
-
-    # pass default allauth or django error message to redirected page
-    error_messages = [str(error) for error in form.errors.values()]
-    for error_message in error_messages:
-      messages.error(self.request, error_message)
-
-    return redirect(reverse('register'))
-    
-
-# overriding default allauth login view
-class CustomLoginView(LoginView):
-  # redirecting to register page instead of default login page
-  def get(self, request, *args, **kwargs):
-    next_url = request.GET.get('next')
-    if next_url:
-      # store the 'next' url in session
-      request.session['next'] = next_url
-    return redirect(reverse('register'))
-
-  def form_valid(self, form):
-    response = super().form_valid(form)
-    # after login redirect to the 'next' url if available
-    next_url = self.request.session.get('next')
-    if next_url:
-      del self.request.session['next'] #remove 'next' url from session
-      return redirect(next_url)
-    else:
-      return response
-
-  # redirecting to register page on login error
   def form_invalid(self, form):
     response = super().form_invalid(form)
 
@@ -125,8 +96,78 @@ class StoreSignupView(SignupView):
   def form_invalid(self, form):
     response = super().form_invalid(form)
 
-    # pass default allauth or django error message to redirected page
-    error_messages = [error for field, errors in form.errors.items() for error in errors]
+    error_messages = [str(error) for error in form.errors.values()]
+    for error_message in error_messages:
+      messages.error(self.request, error_message)
+
+    return response
+
+
+# overriding default allauth login view
+class CustomerLoginView(LoginView):
+  def get(self, request, *args, **kwargs):
+    next_url = request.GET.get('next')
+    if next_url:
+      # store the 'next' url in session
+      request.session['next'] = next_url
+    # redirecting to register page instead of default login page
+    return redirect(reverse('register'))
+
+  def form_valid(self, form):
+    if form.is_valid():
+      user = form.user
+      if user is not None and user.groups.filter(name='customer').exists():
+        login(self.request, user)
+        next_url = self.request.session.get('next')
+        if next_url:
+          del self.request.session['next'] # remove next from session
+          return redirect(next_url)
+        else:
+          return super().form_valid(form)
+      else:
+        messages.error(self.request, "You do not have permission to log in as a user.")
+        return redirect(reverse('register'))
+      
+  # redirecting to register page on login error
+  def form_invalid(self, form):
+    response = super().form_invalid(form)
+
+    error_messages = [str(error) for error in form.errors.values()]
+    for error_message in error_messages:
+      messages.error(self.request, error_message)
+
+    return redirect(reverse('register'))
+
+
+class StoreLoginView(LoginView):
+  template_name = 'store/login.html'
+  success_url = reverse_lazy('store_dashboard')
+
+  def get(self, request, *args, **kwargs):
+    next_url = request.GET.get('next')
+    if next_url:
+      request.session['next'] = next_url
+    return super().get(request, *args, **kwargs)
+
+  def form_valid(self, form):
+    if form.is_valid():
+      user = form.user
+      if user is not None and user.groups.filter(name='store').exists():
+        login(self.request, user)
+        next_url = self.request.session.get('next')
+        if next_url:
+          del self.request.session['next']
+          return redirect(next_url)
+        else:
+          return super().form_valid(form)
+      else:
+        messages.error(self.request, "You do not have permission to log in as a store.")
+        return redirect(reverse_lazy('store_login'))
+      
+  def form_invalid(self, form):
+    response = super().form_invalid(form)
+
+    error_messages = [str(error) for error in form.errors.values()]
     for error_message in error_messages:
       messages.error(self.request, error_message)
 

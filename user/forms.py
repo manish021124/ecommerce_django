@@ -62,6 +62,11 @@ class StoreSignupForm(BaseSignupForm):
   pass
 
 
+# class CustomLoginForm(LoginForm):
+#   def get_user(self):
+#     return self.user_cache
+
+
 class ProfileForm(forms.ModelForm):
   username = forms.CharField(max_length=255)
   email = forms.EmailField()
