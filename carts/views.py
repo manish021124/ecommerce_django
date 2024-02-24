@@ -5,9 +5,10 @@ from .models import Cart, CartItem
 from products.models import Product
 from django.contrib import messages
 from django.http import JsonResponse
+from user.views import CustomerGroupRequiredMixin
 
-# Create your views here.
-class CartDetailView(LoginRequiredMixin, ListView):
+
+class CartDetailView(LoginRequiredMixin, CustomerGroupRequiredMixin, ListView):
   template_name = 'carts/cart_detail.html'
   context_object_name = 'cart_items'
 
@@ -26,7 +27,7 @@ class CartDetailView(LoginRequiredMixin, ListView):
     return context
 
 
-class CartItemDetailView(LoginRequiredMixin, DetailView):
+class CartItemDetailView(LoginRequiredMixin, CustomerGroupRequiredMixin, DetailView):
   model = CartItem
   template_name = 'carts/cart_item_detail.html'
   context_object_name = 'cart_item'
@@ -71,7 +72,7 @@ class AddToCartView(LoginRequiredMixin, View):
     # return redirect('product_detail', pk=product_id)
   
   
-class UpdateCartItemView(LoginRequiredMixin, View):
+class UpdateCartItemView(LoginRequiredMixin, CustomerGroupRequiredMixin, View):
   def post(self, request, cart_item_id):
     cart_item = get_object_or_404(CartItem, pk=cart_item_id)
     new_quantity = int(request.POST.get('quantity'))
@@ -91,7 +92,7 @@ class UpdateCartItemView(LoginRequiredMixin, View):
     return redirect('cart_detail')
 
 
-class DeleteCartItemView(LoginRequiredMixin, View):
+class DeleteCartItemView(LoginRequiredMixin, CustomerGroupRequiredMixin, View):
   def post(self, request, *args, **kwargs):
     cart_item_id = self.kwargs.get('cart_item_id')
     cart_item = get_object_or_404(CartItem, pk=cart_item_id)

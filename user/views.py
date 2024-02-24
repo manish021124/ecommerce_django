@@ -2,17 +2,31 @@ from django.urls import reverse_lazy
 from django.shortcuts import redirect, reverse, render
 from django.views.generic import TemplateView, DetailView, UpdateView, FormView
 from allauth.account.views import SignupView, LoginView
-from .forms import CustomSignupForm, StoreSignupForm, ProfileForm
+from .forms import CustomerSignupForm, StoreSignupForm, ProfileForm
 from django.contrib import messages
 from django.views.generic import ListView
 from .models import Profile
 from products.models import Product, Category
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import Group
-from products.views import StoreGroupRequiredMixin
 
-# Create your views here.
-class HomePageView(ListView):
+# permissions
+class CustomerGroupRequiredMixin(UserPassesTestMixin):
+  def test_func(self):
+    return self.request.user.groups.filter(name='customer').exists()
+
+class StoreGroupRequiredMixin(UserPassesTestMixin):
+  def test_func(self):
+    return self.request.user.groups.filter(name='store').exists()
+
+# to allow access to customers and guests only not store
+class CustomerGroupAndGuestRequiredMixin(UserPassesTestMixin):
+  def test_func(self):
+    user = self.request.user
+    return not user.is_authenticated or user.groups.filter(name='customer').exists()
+
+
+class HomePageView(CustomerGroupAndGuestRequiredMixin, ListView):
   model = Product
   context_object_name = 'product_list'
   template_name = 'home.html'
@@ -39,10 +53,18 @@ class RegisterPage(TemplateView):
 
 
 # overriding default allauth signup view
-class CustomSignupView(SignupView):
-  form_class = CustomSignupForm
+class CustomerSignupView(SignupView):
+  form_class = CustomerSignupForm
   success_url = reverse_lazy('home')
   template_name = 'register.html'
+
+  def form_valid(self, form):
+    response = super().form_valid(form)
+    user = self.user
+
+    customer_group = Group.objects.get(name='customer')
+    user.groups.add(customer_group)
+    return response
 
   # redirecting to register page on signup error
   def form_invalid(self, form):

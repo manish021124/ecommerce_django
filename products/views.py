@@ -4,14 +4,9 @@ from django.views.generic import DetailView, CreateView, UpdateView, DeleteView
 from .models import Product, Category
 from .forms import ProductAddForm, ProductUpdateForm
 from django.urls import reverse_lazy, reverse
-from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
-
-
-class StoreGroupRequiredMixin(UserPassesTestMixin):
-  def test_func(self):
-    return self.request.user.groups.filter(name='store').exists()
+from user.views import StoreGroupRequiredMixin
 
 
 class ProductDetailView(DetailView):
@@ -24,7 +19,6 @@ class ProductDetailView(DetailView):
     context["is_store_user"] = self.request.user.groups.filter(name='store').exists()
     return context
   
-
 
 class ProductCreateView(LoginRequiredMixin, StoreGroupRequiredMixin, CreateView):
   model = Product

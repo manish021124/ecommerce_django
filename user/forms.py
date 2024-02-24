@@ -54,7 +54,7 @@ class BaseSignupForm(SignupForm):
     return user
 
 
-class CustomSignupForm(BaseSignupForm):
+class CustomerSignupForm(BaseSignupForm):
   pass
 
 

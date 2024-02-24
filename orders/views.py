@@ -4,9 +4,10 @@ from .models import Order, OrderItem
 from carts.models import Cart, CartItem
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
+from user.views import CustomerGroupRequiredMixin
 
-# Create your views here.
-class OrderListView(LoginRequiredMixin, ListView):
+
+class OrderListView(LoginRequiredMixin, CustomerGroupRequiredMixin, ListView):
   model = Order
   template_name = 'orders/order_list.html'
   context_object_name = 'order_list'
@@ -15,13 +16,13 @@ class OrderListView(LoginRequiredMixin, ListView):
     return super().get_queryset().filter(user=self.request.user)
   
   
-class OrderDetailView(LoginRequiredMixin, DetailView):
+class OrderDetailView(LoginRequiredMixin, CustomerGroupRequiredMixin, DetailView):
   model = Order
   template_name = 'orders/order_detail.html'
   context_object_name = 'order'
 
 
-class OrderItemView(LoginRequiredMixin, ListView):
+class OrderItemView(LoginRequiredMixin, CustomerGroupRequiredMixin, ListView):
   model = OrderItem
   template_name = 'orders/order_item_list.html'
   context_object_name = 'order_items'
@@ -30,13 +31,13 @@ class OrderItemView(LoginRequiredMixin, ListView):
     return OrderItem.objects.filter(order__user=self.request.user)
   
   
-class OrderItemDetailView(LoginRequiredMixin, DetailView):
+class OrderItemDetailView(LoginRequiredMixin, CustomerGroupRequiredMixin, DetailView):
   model = OrderItem
   template_name = 'orders/order_item_detail.html'
   context_object_name = 'order_item'
 
 
-class CheckOutView(LoginRequiredMixin, View):
+class CheckOutView(LoginRequiredMixin, CustomerGroupRequiredMixin, View):
   def post(self, request, *args, **kwargs):
     try:
       order = Order.objects.create(user=request.user)

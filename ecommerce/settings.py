@@ -165,4 +165,4 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 
 # for adding custom fields in allauth signup form
-ACCOUNT_FORMS = {'signup': 'user.forms.CustomSignupForm'}
+# ACCOUNT_FORMS = {'signup': 'user.forms.CustomSignupForm'}
