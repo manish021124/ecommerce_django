@@ -1,19 +1,16 @@
-<!-- your_template.html -->
+{% extends "_base.html" %} 
+{% block title %} Delete Product {% endblock title %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Delete Product</title>
-</head>
-<body>
-    <h1>Delete Product</h1>
-    <p>Are you sure you want to delete "{{ object }}"?</p>
+{% block content%}
+<h2>Delete Product</h2>
+<div class="mb-3">
+  <p>Are you sure you want to delete "{{ object }}"?</p>
+  <div class="d-flex">
     <form method="post">
-        {% csrf_token %}
-        <button type="submit">Confirm Delete</button>
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">Confirm Delete</button>
     </form>
-    <a href="{% url 'products' %}">Cancel</a>
-</body>
-</html>
+    <a href="{% url 'store_dashboard' %}" class="ms-3 mt-2">Cancel</a>
+  </div>
+</div>
+{% endblock content %}

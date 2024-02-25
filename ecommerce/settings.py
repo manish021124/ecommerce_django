@@ -80,6 +80,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
 
                 'products.context_processors.categories', # context_preprocessor.py in products app
+                'user.context_processors.user_group',
             ],
         },
     },

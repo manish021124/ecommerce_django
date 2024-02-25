@@ -81,9 +81,9 @@ class ProductUpdateView(LoginRequiredMixin, StoreGroupRequiredMixin, UpdateView)
 class ProductDeleteView(LoginRequiredMixin, StoreGroupRequiredMixin, DeleteView):
   model = Product
   template_name = 'products/delete.html'
-  success_url = reverse_lazy('products')
+  success_url = reverse_lazy('store_dashboard')
 
-   # let only the owner to delete product
+  # let only the owner to delete product
   def dispatch(self, request, *args, **kwargs):
     self.object = self.get_object()
 
@@ -101,4 +101,4 @@ class ProductDeleteView(LoginRequiredMixin, StoreGroupRequiredMixin, DeleteView)
     return HttpResponseRedirect(self.get_success_url())
 
   def get_success_url(self):
-    return reverse('products')
+    return reverse('store_dashboard')

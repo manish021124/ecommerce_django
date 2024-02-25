@@ -1,14 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Add Product</title>
-  </head>
-  <body>
-    <h1>Add Product</h1>
-    <form method="post" enctype="multipart/form-data">
-      {% csrf_token %} {{ form.as_p }}
-      <button type="submit">Submit</button>
-    </form>
-  </body>
-</html>
+{% extends "_base.html" %} 
+{% block title %} Add Product {% endblock title %}
+
+{% block content%}
+<h2>Add Product</h2>
+<div class="mb-3">
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %} 
+    {% for field in form %}
+    <div class="mb-3">
+      <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+      {{ field }}
+    </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-warning">Add Product</button>
+  </form>
+</div>
+
+{% endblock content %}
