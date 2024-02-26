@@ -21,7 +21,7 @@
       </tr>
     </thead>
     <tbody>
-      {% for item in order.items.all %}
+      {% for item in order_items %}
         <tr>
           <td><a href="{% url 'orders:order_item_detail' item.id %}">{{ item.product }}</a></td>
           <td>{{ item.quantity }}</td>
@@ -35,7 +35,20 @@
       <tr>
         <th>Total Amount</th>
         <td colspan="3"></td>
-        <td> {{ order.total_amount }} </td>
+        <td>
+          {% with total_amount=0 %} 
+            {% for item in order.items.all %}
+              {% if user_belong_to_store and item.product.store == request.user %}
+                {% with subtotal=item.subtotal %}
+                  {% with total_amount=total_amount|add:subtotal %}
+                  {% endwith %}
+                {% endwith %}
+              {% endif %}
+            {% endfor %}
+            {{ total_amount }}
+          {% endwith %}
+                {% comment %} {{ order.total_amount }} {% endcomment %}
+         </td>
       </tr>
     </tfoot>
   </table>

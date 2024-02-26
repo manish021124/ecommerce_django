@@ -1,0 +1,28 @@
+{% comment %} to reduce code repetition in order_list template {% endcomment %}
+
+<div class="tab-pane fade {% if active == 'true' %}show active{% endif %}" id="{{ tab_id }}" role="tabpanel" aria-labelledby="{{ tab_id }}-tab">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Order Number</th>
+        <th>Date</th>
+        <th>Total Amount</th>
+        {% comment %} <th>Status</th> {% endcomment %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for order in orders %}
+        <tr>
+          <td><a href="{% url 'orders:order_detail' pk=order.pk %}">{{ order.order_number }}</a></td>
+          <td>{{ order.date_ordered }}</td>
+          <td>{{ order.total_amount }}</td>
+          {% comment %} <td>{{ order.status }}</td> {% endcomment %}
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="4">No orders found.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

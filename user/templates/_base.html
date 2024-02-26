@@ -165,11 +165,7 @@
                     <a class="nav-link m-0" href="{% url 'profile_detail' %}">Profile</a>
                   </li>
                   <li class="nav-item py-1">
-                    {% if not user_belong_to_store %}
                     <a class="nav-link m-0" href="{% url 'orders:order_list' %}">Orders</a>
-                    {% else %}
-                    <a class="nav-link m-0" href="#">Orders</a>
-                    {% endif %}
                   </li>
                   <li class="nav-item py-1">
                     <a class="nav-link m-0" href="{% url 'account_logout' %}">Log Out</a>
