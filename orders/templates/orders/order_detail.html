@@ -36,18 +36,7 @@
         <th>Total Amount</th>
         <td colspan="3"></td>
         <td>
-          {% with total_amount=0 %} 
-            {% for item in order.items.all %}
-              {% if user_belong_to_store and item.product.store == request.user %}
-                {% with subtotal=item.subtotal %}
-                  {% with total_amount=total_amount|add:subtotal %}
-                  {% endwith %}
-                {% endwith %}
-              {% endif %}
-            {% endfor %}
-            {{ total_amount }}
-          {% endwith %}
-                {% comment %} {{ order.total_amount }} {% endcomment %}
+          {{ total_amount }}
          </td>
       </tr>
     </tfoot>

@@ -8,7 +8,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from user.views import CustomerGroupRequiredMixin
 from django.contrib.auth.models import Group
-from django.db.models import Q, Count
 
 
 class OrderListView(LoginRequiredMixin, ListView):
@@ -33,13 +32,15 @@ class OrderListView(LoginRequiredMixin, ListView):
   def get_context_data(self, **kwargs):
     context = super().get_context_data(**kwargs)
     user = self.request.user
+
     context['pending_orders'] = self.get_queryset().filter(status='Pending')
     context['processing_orders'] = self.get_queryset().filter(status='Processing')
     context['shipped_orders'] = self.get_queryset().filter(status='Shipped') 
     context['delivered_orders'] = self.get_queryset().filter(status='Delivered') 
     context['cancelled_orders'] = self.get_queryset().filter(status='Cancelled') 
+
     return context
-  
+
   
 class OrderDetailView(LoginRequiredMixin, DetailView):
   model = Order
@@ -53,9 +54,13 @@ class OrderDetailView(LoginRequiredMixin, DetailView):
     user = self.request.user
     if user.groups.filter(name='store').exists():
       order_items = order.items.filter(product__store=user)
+      # total amount of displayed products only
+      total_amount = sum(item.subtotal() for item in order_items)
     else:
       order_items = order.items.all()
+      total_amount = order.total_amount
     context['order_items'] = order_items
+    context['total_amount'] = total_amount
     return context
 
 
