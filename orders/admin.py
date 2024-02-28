@@ -5,6 +5,8 @@ from .models import Order, OrderItem
 # for enabling admin to update status
 class OrderAdmin(admin.ModelAdmin):
   actions = ['mark_as_pending', 'mark_as_processing', 'mark_as_shipped', 'mark_as_delivered', 'mark_as_cancelled']
+  list_filter = ['date_ordered']
+  ordering = ('-date_ordered',)
 
   def mark_as_pending(self, request, queryset):
     queryset.update(status='Pending')

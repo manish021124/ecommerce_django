@@ -44,17 +44,21 @@ class Order(models.Model):
     super().save(*args, **kwargs)
 
   def calculate_total_amount(self):
-    cart_items = self.user.cart.items.all()
-    aggregation_result = cart_items.aggregate(
-      total_amount = Sum(
-        ExpressionWrapper(
-          F('quantity') * (F('price') - (F('price') * F('discount_percentage') / 100)),
-          output_field = DecimalField()
+    # while cancelling order save total amount of order itself instead of accessing cart
+    if hasattr(self, 'user') and hasattr(self.user, 'cart'):
+      cart_items = self.user.cart.items.all()
+      aggregation_result = cart_items.aggregate(
+        total_amount = Sum(
+          ExpressionWrapper(
+            F('quantity') * (F('price') - (F('price') * F('discount_percentage') / 100)),
+            output_field = DecimalField()
+          )
         )
       )
-    )
-    total_amount = aggregation_result.get('total_amount')
-    return total_amount if total_amount is not None else 0
+      total_amount = aggregation_result.get('total_amount')
+      return total_amount if total_amount is not None else 0
+    else:
+      return self.total_amount
   
 
 class OrderItem(models.Model):

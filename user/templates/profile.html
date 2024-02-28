@@ -10,8 +10,10 @@ Gyapu - {{ profile.user.username }}
     <p>Email: {{ profile.user.email }}</p>
     <p>Name: {{ profile.user.full_name }}</p>
     <p>Mobile: {{ profile.user.mobile }}</p>
+    {% if not user_belong_to_store %}
     <p>Birth Date: {{ profile.birth_date }}</p>
     <p>Gender: {{ profile.get_gender_display }}</p>
+    {% endif %}
 
     <a href="{% url 'profile_update' %}" class="btn btn-warning">Edit Profile</a>
     <a href="#" class="btn btn-warning">Change Password</a>

@@ -211,4 +211,12 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
 
   def get_object(self, queryset=None):
     return self.request.user.profile
+
+  # for excluding gender and birthdate fields for stores
+  def get_form(self, form_class=None):
+    form = super().get_form(form_class)
+    if self.request.user.groups.filter(name='store').exists():
+      form.fields.pop('gender', None)
+      form.fields.pop('birth_date', None)
+    return form
   

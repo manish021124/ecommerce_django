@@ -1,0 +1,16 @@
+{% extends "_base.html" %} 
+{% block title %} Confirm Cancel Order {% endblock title %}
+
+{% block content%}
+<h2>Confirm Cancel Order</h2>
+<div class="mb-3">
+  <p>Are you sure you want to cancel order "{{ order.order_number }}"?</p>
+  <div class="d-flex">
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">Yes, Cancel Order</button>
+    </form>
+    <a href="{% url 'orders:order_list' %}" class="ms-3 mt-2">No, Go Back to Order List</a>
+  </div>
+</div>
+{% endblock content %}

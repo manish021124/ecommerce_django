@@ -78,6 +78,7 @@ class ProductUpdateView(LoginRequiredMixin, StoreGroupRequiredMixin, UpdateView)
     return super().form_invalid(form)
   
 
+# can use view instead of deleteview to make it shorter and easier
 class ProductDeleteView(LoginRequiredMixin, StoreGroupRequiredMixin, DeleteView):
   model = Product
   template_name = 'products/delete.html'

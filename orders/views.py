@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views.generic import View, ListView, DetailView
 from .models import Order, OrderItem
@@ -107,3 +107,22 @@ class CheckOutView(LoginRequiredMixin, CustomerGroupRequiredMixin, View):
     except Exception as e:
       messages.error(request, f"Failed to add orders: {str(e)}")
       return redirect('cart_detail')
+
+
+class OrderCancelView(LoginRequiredMixin, View):
+  template_name = 'orders/confirm_order_cancel.html'
+
+  def get(self, request, pk):
+    order = get_object_or_404(Order, pk=pk)
+    return render(request, self.template_name, {'order': order})
+
+  def post(self, request, pk):
+    order = get_object_or_404(Order, pk=pk)
+    if order.status in ['Pending', 'Processing']:
+      order.status = 'Cancelled'
+      order.save()
+      messages.success(request, f'Order {order.order_number} has been cancelled successfully.')
+      return redirect('/orders/')
+    else:
+      messages.error(request, f'Order {order.order_number} cannot be cancelled.')
+    return redirect('/orders/')
