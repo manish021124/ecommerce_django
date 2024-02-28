@@ -8,6 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from user.views import CustomerGroupRequiredMixin
 from django.contrib.auth.models import Group
+from .forms import OrderConfirmationForm
 
 
 class OrderListView(LoginRequiredMixin, ListView):
@@ -80,30 +81,39 @@ class OrderItemDetailView(LoginRequiredMixin, DetailView):
 
 
 class CheckOutView(LoginRequiredMixin, CustomerGroupRequiredMixin, View):
+  template_name = 'orders/order_confirmation.html'
+
+  def get(self, request, *args, **kwargs):
+    return render(request, self.template_name)
+  
   def post(self, request, *args, **kwargs):
     try:
-      order = Order.objects.create(user=request.user)
+      if 'confirm_order' in request.POST:
+        order = Order.objects.create(user=request.user)
 
-      total_amount = order.calculate_total_amount()
-      order.total_amount = total_amount
+        total_amount = order.calculate_total_amount()
+        order.total_amount = total_amount
 
-      order.save()
+        order.save()
 
-      cart_items = request.user.cart.items.all()
-      for cart_item in cart_items:
-        OrderItem.objects.create(
-          order = order,
-          product = cart_item.product,
-          quantity = cart_item.quantity,
-          price = cart_item.price,
-          discount_percentage = cart_item.discount_percentage
-        )
-      # clear user's cart
-      request.user.cart.items.all().delete()
-      # delete the cart
-      request.user.cart.delete()
-      messages.success(request, 'Order added successfully.')
-      return redirect('/orders/')
+        cart_items = request.user.cart.items.all()
+        for cart_item in cart_items:
+          OrderItem.objects.create(
+            order = order,
+            product = cart_item.product,
+            quantity = cart_item.quantity,
+            price = cart_item.price,
+            discount_percentage = cart_item.discount_percentage
+          )
+        # clear user's cart
+        request.user.cart.items.all().delete()
+        # delete the cart
+        request.user.cart.delete()
+        messages.success(request, 'Order added successfully.')
+        return redirect('/orders/')
+      else:
+        messages.error(request, 'Please confirm your order.')
+        return redirect('cart_detail')
     except Exception as e:
       messages.error(request, f"Failed to add orders: {str(e)}")
       return redirect('cart_detail')

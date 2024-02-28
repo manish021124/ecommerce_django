@@ -30,10 +30,7 @@
         </tr>
       </tfoot>
     </table>
-    <form method="post" action="{% url 'checkout' %}">
-      {% csrf_token %}
-      <button type="submit" class="btn btn-sm btn-warning">Proceed to Checkout</button>
-    </form>
+    <a href="{% url 'checkout' %}" class="btn btn-sm btn-warning">Proceed to Checkout</a>
   {% else %}
     <p>Your cart is empty.</p>
   {% endif %}

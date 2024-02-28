@@ -19,7 +19,7 @@
           <td>{{ order.total_amount }}</td>
           {% comment %} <td>{{ order.status }}</td> {% endcomment %}
           {% if order.status == 'Pending' or order.status == 'Processing' %}
-            <td><a href="{% url 'orders:order_cancel' pk=order.pk %}" class="btn btn-danger">Cancel Order</a></td>
+            <td><a href="{% url 'orders:order_cancel' pk=order.pk %}" class="btn btn-sm btn-danger">Cancel Order</a></td>
           {% else %}
             <td></td>
           {% endif %}
