@@ -8,8 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from user.views import CustomerGroupRequiredMixin
 from django.contrib.auth.models import Group
-from .forms import OrderConfirmationForm
-
+from django.db.models import Sum, F, ExpressionWrapper, DecimalField
 
 class OrderListView(LoginRequiredMixin, ListView):
   model = Order
@@ -20,16 +19,21 @@ class OrderListView(LoginRequiredMixin, ListView):
     user = self.request.user
     if user.groups.filter(name='customer').exists():
       # For customers, retrieve orders related to the current user
-      return Order.objects.filter(user=user).order_by('-date_ordered')
+      # use annotate to override models total_amount for store
+      return Order.objects.filter(user=user).annotate(total_amount_override=Sum('total_amount')).order_by('-date_ordered')
     elif user.groups.filter(name='store').exists():
       # For stores, retrieve orders related to the products created by that store
-      # Get the products created by the store
-      products = Product.objects.filter(store=user)
-     # Retrive orders related to these products 
-      return Order.objects.filter(items__product__in=products).distinct().order_by('-date_ordered')
+      # calculate total amount of products that belongs to this store only leaving products that belong to other stores
+      orders = Order.objects.filter(items__product__store=user).distinct().annotate(total_amount_override=Sum(
+        ExpressionWrapper(
+          F('items__quantity') * (F('items__price') - (F('items__price') * F('items__discount_percentage') / 100)),
+            output_field=DecimalField()
+          )
+        )).order_by('-date_ordered')
+      return orders
     else:
       return Order.objects.none()
-
+ 
   def get_context_data(self, **kwargs):
     context = super().get_context_data(**kwargs)
     user = self.request.user
