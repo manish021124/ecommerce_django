@@ -7,6 +7,9 @@
   <p><strong>Order Number:</strong> {{ order.order_number }} </p>
   <p><strong>Date Ordered:</strong> {{ order.date_ordered }}</p>
   <p><strong>Status:</strong> {{ order.status }}</p>
+  {% if user_belong_to_store %}
+  <p><strong>Ordered By:</strong> {{ order.user }}</p>
+  {% endif %}
 
   <h2>Order Items</h2>
 

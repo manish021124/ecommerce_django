@@ -1,0 +1,119 @@
+{% comment %} included in _base.html {% endcomment %}
+
+{% load static %}
+
+<nav class="navbar navbar-expand-lg first-nav">
+  <div class="container-fluid d-flex">
+    <div class="contact-icons ms-4 d-none d-lg-block">
+      <div class="d-flex">
+        <div class="d-flex">
+          <div class="tooltip px-0">
+            <img src="{% static "images/icons/contact.svg" %}" alt="phone">
+            <span class="tooltiptext uppernavtooltiptext">
+              Phone
+            </span>
+          </div>
+          <span class="pt-1">|</span>
+        </div>
+        <div class="d-flex">
+          <div class="tooltip px-0">
+            <img src="{% static "images/icons/whatsapp.png" %}" alt="whatsapp">
+            <span class="tooltiptext uppernavtooltiptext">
+              whatsapp
+            </span>
+          </div>
+          <span class="pt-1">|</span>
+        </div>
+        <div>
+          <div class="tooltip px-0">
+            <img src="{% static "images/icons/viber.png" %}" alt="viber">
+            <span class="tooltiptext uppernavtooltiptext">
+              viber
+            </span>
+          </div>
+        </div>
+        <div class="mt-1">
+          <a class="phone-number ps-1" href="#">
+            015970362/9801855549
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="menu flex-grow-1">
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+        data-bs-target="#collapsibleNavbar">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#707B8E"
+          class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
+          <path d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 
+                      0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
+        </svg>
+        <a class="navbar-brand" href="#">Links</a>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="collapsibleNavbar">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link py-0" href="#">Gyapu Rewards</a>
+          </li>
+          <li class="nav-item">
+            {% if user.is_authenticated and user_belong_to_store %}
+              <a class="nav-link py-0" href="{% url 'product_add' %}">Add Product</a>
+            {% elif not user.is_authenticated %}
+              <a class="nav-link py-0" href="{% url 'store_login' %}">Sell Your Product</a>
+            {% endif %}
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="accessibilities">
+      <div class="d-flex justify-content-end">
+        {% if user.is_authenticated %}
+          <div class="tooltip mx-3">
+            <a href="{% url 'profile_detail' %}">{{ user.username }}</a>
+            <span class="tooltiptext lowernavtooltiptext py-3 px-0" style="width: 125px">
+              <ul class="m-0" style="list-style: none">
+                <li class="nav-item py-1">
+                  <a class="nav-link m-0" href="{% url 'profile_detail' %}">Profile</a>
+                </li>
+                <li class="nav-item py-1">
+                  <a class="nav-link m-0" href="{% url 'orders:order_list' %}">Orders</a>
+                </li>
+                <li class="nav-item py-1">
+                  <a class="nav-link m-0" href="{% url 'account_logout' %}">Log Out</a>
+                </li>
+              </ul>
+            </span>
+          </div>
+        {% else %}
+          <div class="d-flex mx-3">
+            <a href="{% url "register" %}">Login/Register</a>
+          </div>
+        {% endif %}
+        <div class="tooltip qrtooltip mx-3">
+          <a class="nav-link" href="#">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-phone"
+              viewBox="0 0 16 16">
+              <path d="M11 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V2a1 1 
+                              0 0 1 1-1h6zM5 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V2a2 
+                              2 0 0 0-2-2H5z" />
+              <path d="M8 14a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
+            </svg>
+          </a>
+          <span class="tooltiptext qrtooltiptext py-3">
+            <p class="py-1 m-0">iOS & Android</p>
+            <div class="qrimg mx-auto">
+              <img src="{% static "images/qrcode.png" %}" alt="qrcode">
+            </div>
+            <p class="py-1 m-0">Scan to download</p>
+          </span>
+        </div>
+        <div class="switch">
+          <div class="form-check form-switch ms-3">
+            <input class="form-check-input" type="checkbox" id="toggleswitch" value="yes" checked>
+            <label class="form-check-label" for="toggleswitch"></label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>

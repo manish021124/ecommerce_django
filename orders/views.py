@@ -67,15 +67,6 @@ class OrderDetailView(LoginRequiredMixin, DetailView):
     context['order_items'] = order_items
     context['total_amount'] = total_amount
     return context
-
-
-class OrderItemView(LoginRequiredMixin, ListView):
-  model = OrderItem
-  template_name = 'orders/order_item_list.html'
-  context_object_name = 'order_items'
-
-  def get_queryset(self):
-    return OrderItem.objects.filter(order__user=self.request.user)
   
   
 class OrderItemDetailView(LoginRequiredMixin, DetailView):
