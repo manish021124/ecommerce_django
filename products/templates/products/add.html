@@ -12,8 +12,40 @@
       {{ field }}
     </div>
     {% endfor %}
+
+    {{ image_formset.management_form }}
+    {% comment %} <div id="image_formset"> {% endcomment %}
+      {% for form in image_formset %}
+      <div class="image-form">
+        {{ form.as_p }}
+      </div>
+      {% endfor %}
+    {% comment %} </div> {% endcomment %}
+    {% comment %} <button type="button" class="btn btn-secondary" id="add_image">Add Image</button> {% endcomment %}
+
     <button type="submit" class="btn btn-warning">Add Product</button>
   </form>
 </div>
 
 {% endblock content %}
+
+
+{% comment %} {% block scripts %}
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var addImageBtn = document.getElementById('add_image');
+
+    addImageBtn.addEventListener('click', function() {
+      var formsetDiv = document.getElementById('image_formset');
+      var formCount = formsetDiv.querySelectorAll('.image-form').length;
+      var templateForm = document.querySelector('#image_formset .image-form:last-child');
+      var newForm = templateForm.cloneNode(true);
+     
+      newForm.innerHTML= newForm.innerHTML.replace(/form-[0-9]+/g, `form-${formCount}`);
+      newForm.innerHTML = newForm.innerHTML.replace(/id_form-[0-9]+/g, `id_form-${formCount}`);
+
+      formsetDiv.appendChild(newForm);
+    });
+  });
+  </script>
+{% endblock %} {% endcomment %}

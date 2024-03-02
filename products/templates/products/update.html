@@ -11,7 +11,49 @@
         {{ field }}
       </div>
       {% endfor %}
+
+      {{ image_formset.management_form }}
+      {% for form in image_formset %}
+      <div class="image-form">
+        {{ form.as_p }}
+      </div>
+      {% endfor %}
+
+      {% comment %} <div id="image_formset">
+      {{ image_formset.management_form }}
+      <div class="image_form">
+        <div class="mb-3">
+          <label for="id_form-0-image">Image</label>
+          <input type="file" name="form-0-image" id="id_form-0-image">
+        </div>
+      </div>
+    </div> {% endcomment %}
+      {% comment %} <button type="button" class="btn btn-secondary" id="add_image">Add Image</button> {% endcomment %}
       <button type="submit" class="btn btn-warning">Update Product</button>
     </form>
   </div>
+
+  
 {% endblock %}
+
+
+{% comment %} {% block scripts %}
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    var addImageBtn = document.getElementById('add_image');
+    addImageBtn.addEventListener('click', function() {
+      var formsetDiv = document.getElementById('image_formset');
+      var formIdx = formsetDiv.getElementsByClassName('image_form').length;
+      var newImageForm = document.createElement('div');
+      newImageForm.classList.add('image_form');
+      newImageForm.innerHTML = `
+        <div class="mb-3">
+          <label for="id_form-${formIdx}-image">Image</label>
+          <input type="file" name="form-${formIdx}-image" id="id_form-${formIdx}-image">
+        </div>
+      `;
+      formsetDiv.appendChild(newImageForm);
+    });
+  });
+</script>
+{% endblock %} {% endcomment %}

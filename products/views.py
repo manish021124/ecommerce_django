@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render
 from django.views.generic import DetailView, CreateView, UpdateView, DeleteView
 from .models import Product, Category
-from .forms import ProductAddForm, ProductUpdateForm
+from .forms import ProductAddForm, ProductUpdateForm, ProductImageForm, ProductImageFormSet
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
@@ -25,10 +25,30 @@ class ProductCreateView(LoginRequiredMixin, StoreGroupRequiredMixin, CreateView)
   form_class = ProductAddForm
   template_name = 'products/add.html'
 
+  def get_context_data(self, **kwargs):
+    context = super().get_context_data(**kwargs)
+    if self.request.POST:
+      context['form'] = self.form_class(self.request.POST, self.request.FILES)
+      context['image_formset'] = ProductImageFormSet(self.request.POST, self.request.FILES)
+    else:
+      context['form'] = self.form_class()
+      context['image_formset'] = ProductImageFormSet()
+    return context
+
   def form_valid(self, form):
-    form.instance.store = self.request.user
-    messages.success(self.request, 'Product added successfully!')
-    return super().form_valid(form)
+    # form.instance.store = self.request.user
+    context = self.get_context_data()
+    image_formset = context['image_formset']
+    if form.is_valid() and image_formset.is_valid():
+      self.object = form.save(commit=False)
+      self.object.store = self.request.user
+      self.object.save()
+      image_formset.instance = self.object
+      image_formset.save()
+      messages.success(self.request, 'Product added successfully!')
+      return super().form_valid(form)
+    else:
+      return self.form_invalid(form)
 
   def form_invalid(self, form):
     # get error messages from the form and add them to messages framework
@@ -52,7 +72,10 @@ class ProductUpdateView(LoginRequiredMixin, StoreGroupRequiredMixin, UpdateView)
     return reverse_lazy('product_detail', kwargs={'pk': self.object.pk})
 
   def get_object(self, queryset=None):
-    return Product.objects.get(pk=self.kwargs['pk'])
+    try:
+      return Product.objects.get(pk=self.kwargs['pk'])
+    except Product.DoesNotExist:
+      raise Http404("Product does not exist")
 
   # let only the owner to update product
   def dispatch(self, request, *args, **kwargs):
@@ -64,16 +87,39 @@ class ProductUpdateView(LoginRequiredMixin, StoreGroupRequiredMixin, UpdateView)
       return HttpResponseRedirect(self.get_success_url())
     return super().dispatch(request, *args, **kwargs)
 
+  def get_context_data(self, **kwargs):
+    context = super().get_context_data(**kwargs)
+    if self.request.POST:
+      context['form'] = self.form_class(self.request.POST, instance=self.object)
+      context['image_formset'] = ProductImageFormSet(self.request.POST, self.request.FILES, instance=self.object)
+    else:
+      context['form'] = self.form_class(instance=self.object)
+      context['image_formset'] = ProductImageFormSet(instance=self.object)
+    return context
+
   def form_valid(self, form):
-    form.save()
-    messages.success(self.request, 'Product updated successfully!')
-    return super().form_valid(form)
+    context = self.get_context_data()
+    image_formset = context['image_formset']
+    if form.is_valid() and image_formset.is_valid():
+      self.object = form.save()
+      image_formset.save()
+      messages.success(self.request, 'Product updated successfully!')
+      return super().form_valid(form)
+    else:
+      return self.form_invalid(form)
   
   def form_invalid(self, form):
     error_messages = []
     for field, errors in form.errors.items():
       for error in errors:
         error_messages.append(f"{field}: {error}")
+
+    context = self.get_context_data()
+    if 'image_formset' in context:
+      for image_form in context['image_formset']:
+        for field, errors in image_form.errors.items():
+          for error in errors:
+            error_messages.append(f"Image {field}: {error}")
     messages.error(self.request, "\n".join(error_messages))
     return super().form_invalid(form)
   

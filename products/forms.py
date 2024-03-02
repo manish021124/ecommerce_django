@@ -1,9 +1,28 @@
 from django import forms 
 from .models import Product, ProductImage, Category
+from django.forms import BaseInlineFormSet, inlineformset_factory
 
-class ProductFormBase(forms.ModelForm):
+class ProductImageForm(forms.ModelForm):
   image = forms.ImageField(label='Product Image', required=False)
 
+  class Meta:
+    model = ProductImage
+    fields = ['image']
+
+
+# class BaseProductImageFormSet(forms.BaseInlineFormSet):
+#   def add_fields(self, form, index):
+#     super().add_fields(form, index)
+#     form.fields[f'image_{index}'] = forms.ImageField(label='Product Image', required=False)
+
+#   def get_form_kwargs(self, index):
+#     kwargs = super().get_form_kwargs(index)
+#     kwargs['prefix'] = self.add_prefix(index)
+#     return kwargs
+
+ProductImageFormSet = inlineformset_factory(parent_model=Product, model=ProductImage, form=ProductImageForm, extra=5, can_delete=True)
+
+class ProductFormBase(forms.ModelForm):
   class Meta:
     model = Product
     fields = ['name', 'description', 'price', 'discount_percentage', 'stock', 'category']
@@ -32,9 +51,6 @@ class ProductFormBase(forms.ModelForm):
     product = super().save(commit=False)
     if commit:
       product.save()
-      image = self.cleaned_data.get('image')
-      if image:
-        ProductImage.objects.create(product=product, image=image)
     return product
 
 
@@ -43,16 +59,4 @@ class ProductAddForm(ProductFormBase):
 
 
 class ProductUpdateForm(ProductFormBase):
-  def save(self, commit=True):
-    product = super().save(commit=False)
-    if commit:
-      product.save()
-      image = self.cleaned_data.get('image')
-      if image:
-        product_image = ProductImage.objects.filter(product=product).first()
-        if product_image:
-          product_image.image = image
-          product_image.save()
-        else:
-          ProductImage.objects.create(product=product, image=image)
-    return product
+  pass
