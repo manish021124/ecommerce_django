@@ -13,39 +13,20 @@
     </div>
     {% endfor %}
 
-    {{ image_formset.management_form }}
-    {% comment %} <div id="image_formset"> {% endcomment %}
-      {% for form in image_formset %}
-      <div class="image-form">
-        {{ form.as_p }}
-      </div>
-      {% endfor %}
-    {% comment %} </div> {% endcomment %}
-    {% comment %} <button type="button" class="btn btn-secondary" id="add_image">Add Image</button> {% endcomment %}
+    {% comment %} for adding multiple product images {% endcomment %}
+    <div id="image_formset">
+      {% comment %} got from django's default form {% endcomment %}
+      <input type="hidden" name="images-TOTAL_FORMS" value="5" id="id_images-TOTAL_FORMS">
+      <input type="hidden" name="images-INITIAL_FORMS" value="0" id="id_images-INITIAL_FORMS">
+      <input type="hidden" name="images-MIN_NUM_FORMS" value="0" id="id_images-MIN_NUM_FORMS">
+      <input type="hidden" name="images-MAX_NUM_FORMS" value="1000" id="id_images-MAX_NUM_FORMS">
 
-    <button type="submit" class="btn btn-warning">Add Product</button>
+      {% comment %} handled by js function addProductImage {% endcomment %}
+    </div> 
+
+    <div><button type="button" class="btn btn-sm btn-secondary" id="add_image" onclick="addProductImage()">Add Image</button></div>
+    <button type="submit" class="btn btn-warning mt-3">Add Product</button>
   </form>
 </div>
 
 {% endblock content %}
-
-
-{% comment %} {% block scripts %}
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    var addImageBtn = document.getElementById('add_image');
-
-    addImageBtn.addEventListener('click', function() {
-      var formsetDiv = document.getElementById('image_formset');
-      var formCount = formsetDiv.querySelectorAll('.image-form').length;
-      var templateForm = document.querySelector('#image_formset .image-form:last-child');
-      var newForm = templateForm.cloneNode(true);
-     
-      newForm.innerHTML= newForm.innerHTML.replace(/form-[0-9]+/g, `form-${formCount}`);
-      newForm.innerHTML = newForm.innerHTML.replace(/id_form-[0-9]+/g, `id_form-${formCount}`);
-
-      formsetDiv.appendChild(newForm);
-    });
-  });
-  </script>
-{% endblock %} {% endcomment %}

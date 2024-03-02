@@ -66,3 +66,31 @@ document.addEventListener('DOMContentLoaded', function() {
       console.error('Error fetching cart count:', error);
     });
 });
+
+// allow user to add product image one by one
+function addProductImage() {
+  let addImageBtn = document.getElementById('add_image');
+  let formsetDiv = document.getElementById('image_formset');
+  let count = formsetDiv.getElementsByClassName('image-form').length; // Count the elements with class name 'image-form'
+  if (count < 5) {
+    let newImageForm = document.createElement('div');
+    newImageForm.classList.add('image-form');
+    // copied default django html
+    newImageForm.innerHTML = `
+      <div>
+        <label for="id_images-${count}-image">Product Image:</label>
+        <input type="file" name="images-${count}-image" accept="image/*" id="id_images-${count}-image">
+      </div>
+      <p>
+        <label for="id_images-${count}-DELETE">Delete:</label>
+        <input type="checkbox" name="images-${count}-DELETE" id="id_images-${count}-DELETE">
+        <input type="hidden" name="images-${count}-id" id="id_images-${count}-id">
+        <input type="hidden" name="images-${count}-product" id="id_images-${count}-product">
+      </p>
+    `;
+    formsetDiv.appendChild(newImageForm);
+    if (count == 4) {
+      addImageBtn.style.display = 'none';
+    }
+  }
+}

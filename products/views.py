@@ -25,24 +25,29 @@ class ProductCreateView(LoginRequiredMixin, StoreGroupRequiredMixin, CreateView)
   form_class = ProductAddForm
   template_name = 'products/add.html'
 
+  # Override get_context_data to include form and image_formset in context
   def get_context_data(self, **kwargs):
     context = super().get_context_data(**kwargs)
     if self.request.POST:
+      # If form is submitted with POST data, populate form and image_formset with POST data
       context['form'] = self.form_class(self.request.POST, self.request.FILES)
       context['image_formset'] = ProductImageFormSet(self.request.POST, self.request.FILES)
     else:
+      # If no POST data, provide empty form and image_formset
       context['form'] = self.form_class()
       context['image_formset'] = ProductImageFormSet()
     return context
 
+  # Override form_valid to save form and image_formset data if both are valid
   def form_valid(self, form):
-    # form.instance.store = self.request.user
     context = self.get_context_data()
     image_formset = context['image_formset']
     if form.is_valid() and image_formset.is_valid():
+      # Save the product form
       self.object = form.save(commit=False)
       self.object.store = self.request.user
       self.object.save()
+      # Associate the image_formset with the newly created product and save it
       image_formset.instance = self.object
       image_formset.save()
       messages.success(self.request, 'Product added successfully!')

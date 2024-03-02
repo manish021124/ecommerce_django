@@ -1,6 +1,6 @@
 from django import forms 
 from .models import Product, ProductImage, Category
-from django.forms import BaseInlineFormSet, inlineformset_factory
+from django.forms import inlineformset_factory
 
 class ProductImageForm(forms.ModelForm):
   image = forms.ImageField(label='Product Image', required=False)
@@ -9,18 +9,14 @@ class ProductImageForm(forms.ModelForm):
     model = ProductImage
     fields = ['image']
 
-
-# class BaseProductImageFormSet(forms.BaseInlineFormSet):
-#   def add_fields(self, form, index):
-#     super().add_fields(form, index)
-#     form.fields[f'image_{index}'] = forms.ImageField(label='Product Image', required=False)
-
-#   def get_form_kwargs(self, index):
-#     kwargs = super().get_form_kwargs(index)
-#     kwargs['prefix'] = self.add_prefix(index)
-#     return kwargs
-
-ProductImageFormSet = inlineformset_factory(parent_model=Product, model=ProductImage, form=ProductImageForm, extra=5, can_delete=True)
+# to upload multiple image
+ProductImageFormSet = inlineformset_factory(
+  parent_model=Product, 
+  model=ProductImage, 
+  form=ProductImageForm, 
+  extra=5, 
+  can_delete=True
+)
 
 class ProductFormBase(forms.ModelForm):
   class Meta:
