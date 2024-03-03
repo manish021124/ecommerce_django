@@ -5,7 +5,7 @@ from allauth.account.views import SignupView, LoginView
 from .forms import CustomerSignupForm, StoreSignupForm, ProfileForm
 from django.contrib import messages
 from django.views.generic import ListView
-from .models import Profile
+from .models import Profile, CustomUser
 from products.models import Product, Category
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -83,11 +83,7 @@ class CustomerSignupView(SignupView):
 class StoreSignupView(SignupView):
   form_class = StoreSignupForm
   template_name = 'store/signup.html'
-  # success_url = reverse_lazy('store_dashboard')
-
-  def get_success_url(self):
-    store_uuid = self.user.id
-    return reverse_lazy('store_dashboard', kwargs={'pk': store_uuid})
+  success_url = reverse_lazy('store_dashboard')
 
   def form_valid(self, form):
     response = super().form_valid(form)
@@ -145,10 +141,7 @@ class CustomerLoginView(LoginView):
 
 class StoreLoginView(LoginView):
   template_name = 'store/login.html'
-
-  def get_success_url(self):
-    store_uuid = self.request.user.id
-    return reverse_lazy('store_dashboard', kwargs={'pk': store_uuid})
+  success_url = reverse_lazy('store_dashboard')
 
   def get(self, request, *args, **kwargs):
     next_url = request.GET.get('next')
@@ -181,14 +174,12 @@ class StoreLoginView(LoginView):
     return response
 
 
-class StoreDashboard(TemplateView):
+class BaseStoreDashboard(TemplateView):
   template_name = 'store/dashboard.html'
 
   def get_queryset(self):
-    # return Product.objects.filter(store=self.request.user, is_deleted=False)  
-    store_pk = self.kwargs.get('pk')
-    return Product.objects.filter(store_id=store_pk, is_deleted=False)
-
+    return Product.objects.filter(store=self.request.user, is_deleted=False)  
+    
   def get_context_data(self, **kwargs):
     context = super().get_context_data(**kwargs)
     context['products'] = self.get_queryset()
@@ -202,14 +193,45 @@ class StoreDashboard(TemplateView):
 
     return context
 
+
+class StoreDashboard(LoginRequiredMixin, StoreGroupRequiredMixin, BaseStoreDashboard):
+  pass
+
+# for customer to view store's profile
+class StoreProfileCustomerView(LoginRequiredMixin, BaseStoreDashboard):
+  def get_queryset(self):
+    store_pk = self.kwargs.get('pk')
+    return Product.objects.filter(store_id=store_pk, is_deleted=False)
+
+  # to pass info of store in template
+  def get_context_data(self, **kwargs):
+    context = super().get_context_data(**kwargs)
+    store_pk = self.kwargs.get('pk')
+    store = CustomUser.objects.get(pk=store_pk)
+    context["store"] = store
+    return context
   
-class ProfileDetailView(LoginRequiredMixin, DetailView):
+
+class BaseProfileDetailView(LoginRequiredMixin, DetailView):
   model = Profile
   template_name = 'profile.html'
   context_object_name = 'profile'
 
   def get_object(self, queryset=None):
     return self.request.user.profile
+
+  
+class ProfileDetailView(BaseProfileDetailView):
+  pass
+
+
+# for store to view customers profile
+class CustomerProfileStoreView(StoreGroupRequiredMixin, BaseProfileDetailView):
+  template_name = 'customer_profile.html'
+
+  def get_object(self, queryset=None):
+    uuid = self.kwargs.get('pk')
+    return Profile.objects.get(user_id=uuid)
 
 
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):

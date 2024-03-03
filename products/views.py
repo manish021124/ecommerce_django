@@ -133,10 +133,7 @@ class ProductUpdateView(LoginRequiredMixin, StoreGroupRequiredMixin, UpdateView)
 class ProductDeleteView(LoginRequiredMixin, StoreGroupRequiredMixin, DeleteView):
   model = Product
   template_name = 'products/delete.html'
-
-  def get_success_url(self):
-    store_pk = self.object.store.pk
-    return reverse_lazy('store_dashboard', kwargs={'pk': store_pk})
+  success_url = reverse_lazy('store_dashboard')
 
   # let only the owner to delete product
   def dispatch(self, request, *args, **kwargs):
@@ -145,13 +142,15 @@ class ProductDeleteView(LoginRequiredMixin, StoreGroupRequiredMixin, DeleteView)
     # check if the current user is the owner of the product
     if self.object.store != request.user:
       messages.error(request, "You are not authorized to delete this product.")
-      return HttpResponseRedirect(self.get_success_url())
+      return HttpResponseRedirect(reverse('product_detail', kwargs={'pk': self.object.pk}))
     return super().dispatch(request, *args, **kwargs)
 
   def delete(self, request, *args, **kwargs):
     self.object = self.get_object()
-    success_url = self.get_success_url()
-    self.object.is_deleted = True
-    self.object.save()
-    messages.success(request, "Product deleted successfully.")
-    return HttpResponseRedirect(success_url)
+    try:
+      self.object.is_deleted = True
+      self.object.save()
+      messages.success(request, "Product deleted successfully.")
+    except Exception as e:
+      messages.error(request, f"An error occured while deleting the product: {str(e)}")
+    return HttpResponseRedirect(self.get_success_url())

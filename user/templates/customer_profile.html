@@ -1,0 +1,14 @@
+{% extends "_base.html" %}
+{% block title %} 
+Gyapu - {{ profile.user.username }}
+{% endblock title %} 
+
+{% block content %}
+  <div class="mb-3">
+    <h1>Customer Detail</h1>
+
+    <p>Email: {{ profile.user.email }}</p>
+    <p>Name: {{ profile.user.full_name }}</p>
+    <p>Mobile: {{ profile.user.mobile }}</p>
+  </div>
+{% endblock content %}

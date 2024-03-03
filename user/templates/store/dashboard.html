@@ -1,10 +1,23 @@
 {% extends '_base.html' %}
 {% load static %}
-{% block title %}Store Dashboard{% endblock %}
+{% block title %}
+  {% if user_belong_to_store %}
+    Store Dashboard
+  {% else %}
+    {{ store.username }} Profile
+  {% endif %}
+{% endblock %}
 
 {% block content %}
 <section class="feature-list pb-3">
-  <h1>Welcome to Your Store Dashboard</h1>
+  {% if user_belong_to_store %}
+    <h1>Welcome to Your Dashboard</h1>
+  {% else %}
+    <h1 class="text-center">{{ store.username }}</h1>
+    <h3>Contact Info:</h3>
+    <p>Email: {{ store.email }}</p>
+    <p>Phone: {{ store.mobile }}</p>
+  {% endif %}
 
   {% if products %}
   <div class="top-picks">

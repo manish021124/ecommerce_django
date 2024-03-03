@@ -7,7 +7,7 @@
         {% if not user_belong_to_store %}
           {% url 'home' %}
         {% else %}
-          {% url 'store_dashboard' user.id %}
+          {% url 'store_dashboard' %}
         {% endif %}
       ">
         <div class="d-flex justify-content-center">
