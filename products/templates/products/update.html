@@ -12,48 +12,55 @@
       </div>
       {% endfor %}
 
-      {{ image_formset.management_form }}
-      {% for form in image_formset %}
-      <div class="image-form">
-        {{ form.as_p }}
-      </div>
-      {% endfor %}
-
-      {% comment %} <div id="image_formset">
-      {{ image_formset.management_form }}
-      <div class="image_form">
-        <div class="mb-3">
-          <label for="id_form-0-image">Image</label>
-          <input type="file" name="form-0-image" id="id_form-0-image">
+      <div class="image_formset">
+        {{ image_formset.management_form }}
+        {% for form in image_formset %}
+        <div class="image-form mb-3">
+          {{ form.as_div }}
         </div>
+        {% endfor %}
       </div>
-    </div> {% endcomment %}
-      {% comment %} <button type="button" class="btn btn-secondary" id="add_image">Add Image</button> {% endcomment %}
-      <button type="submit" class="btn btn-warning">Update Product</button>
+
+      <div>
+        <button type="button" class="btn btn-sm btn-secondary" id="add_image">Add Image</button>
+      </div>
+      <button type="submit" class="btn btn-warning mt-3">Update Product</button>
     </form>
   </div>
 
   
-{% endblock %}
+{% endblock content %}
 
 
-{% comment %} {% block scripts %}
+{% block scripts %}
 <script>
+  //loads on every page so not included in script.js
   document.addEventListener("DOMContentLoaded", function() {
-    var addImageBtn = document.getElementById('add_image');
+    let addImageBtn = document.getElementById('add_image');
+    let currentIndex = 0;
+    //gets all child divs with image-form class inside the image_formset class
+    let imageForms = document.querySelectorAll('.image_formset > .image-form'); 
+
+    //hide child divs without anchor tags and count the number ot visible child divs
+    imageForms.forEach(function (form) {
+      if (!form.querySelector('a')) {
+        form.style.display = 'none';
+      } else {
+        currentIndex++;
+      }
+    });
+
     addImageBtn.addEventListener('click', function() {
-      var formsetDiv = document.getElementById('image_formset');
-      var formIdx = formsetDiv.getElementsByClassName('image_form').length;
-      var newImageForm = document.createElement('div');
-      newImageForm.classList.add('image_form');
-      newImageForm.innerHTML = `
-        <div class="mb-3">
-          <label for="id_form-${formIdx}-image">Image</label>
-          <input type="file" name="form-${formIdx}-image" id="id_form-${formIdx}-image">
-        </div>
-      `;
-      formsetDiv.appendChild(newImageForm);
+      if (currentIndex < 5) {
+        let nextForm = imageForms[currentIndex];
+        
+        nextForm.style.display = 'block';
+        currentIndex++;
+        if (currentIndex == 5) {
+          addImageBtn.style.display = 'none';
+        }
+      }
     });
   });
 </script>
-{% endblock %} {% endcomment %}
+{% endblock scripts %}

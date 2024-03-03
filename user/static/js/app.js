@@ -67,6 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// can be done as in product update form
 // allow user to add product image one by one
 function addProductImage() {
   let addImageBtn = document.getElementById('add_image');
