@@ -15,7 +15,7 @@
       <p>Total Amount: {{ product.total_amount }}</p>
     {% endif %}
     <p>Quantity: 
-      {% if is_store_user %}
+      {% if user_belong_to_store %}
         {{ product.stock }}
       {% else %}
         <button class="btn btn-sm btn-warning" onclick="decrementQuantity()" data-uuid="{{ product.pk }}">-</button>
@@ -30,11 +30,11 @@
       {{ product.category }}
     </p>
 
-    {% if is_store_user %}
+    {% if user_belong_to_store %}
       <a href="{% url 'product_update' product.id %}" class="btn btn-warning">Edit</a>
       <a href="{% url 'product_delete' pk=product.pk %}" class="btn btn-danger">Delete</a>
     {% else %}
-      <p>Store: {{ product.store }}</p>
+      <p>Store: <a href="{% url 'store_dashboard' pk=store.id %}">{{ product.store }}</a></p>
       <form method="post" action={% url 'add_to_cart' product.pk %}>
         {% csrf_token %}
         <input type="hidden" id="quantity_input{{ product.pk }}" name="quantity" value="1">

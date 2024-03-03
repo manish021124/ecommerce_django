@@ -16,7 +16,7 @@ class ProductDetailView(DetailView):
 
   def get_context_data(self, **kwargs):
     context = super().get_context_data(**kwargs)
-    context["is_store_user"] = self.request.user.groups.filter(name='store').exists()
+    context['store'] = self.object.store
     return context
   
 
@@ -133,7 +133,10 @@ class ProductUpdateView(LoginRequiredMixin, StoreGroupRequiredMixin, UpdateView)
 class ProductDeleteView(LoginRequiredMixin, StoreGroupRequiredMixin, DeleteView):
   model = Product
   template_name = 'products/delete.html'
-  success_url = reverse_lazy('store_dashboard')
+
+  def get_success_url(self):
+    store_pk = self.object.store.pk
+    return reverse_lazy('store_dashboard', kwargs={'pk': store_pk})
 
   # let only the owner to delete product
   def dispatch(self, request, *args, **kwargs):
@@ -147,10 +150,8 @@ class ProductDeleteView(LoginRequiredMixin, StoreGroupRequiredMixin, DeleteView)
 
   def delete(self, request, *args, **kwargs):
     self.object = self.get_object()
+    success_url = self.get_success_url()
     self.object.is_deleted = True
     self.object.save()
     messages.success(request, "Product deleted successfully.")
-    return HttpResponseRedirect(self.get_success_url())
-
-  def get_success_url(self):
-    return reverse('store_dashboard')
+    return HttpResponseRedirect(success_url)

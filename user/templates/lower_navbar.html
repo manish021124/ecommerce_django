@@ -9,7 +9,7 @@
         {% if not user_belong_to_store %}
           {% url 'home' %}
         {% else %}
-          {% url 'store_dashboard' %}
+          {% url 'store_dashboard' user.id %}
         {% endif %}
       ">
         <img class="img-fluid" id="gyapu-head" src="{% static "images/gyapu-header-lightmode.svg" %}" alt="gyapu brand logo">

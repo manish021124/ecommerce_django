@@ -83,7 +83,11 @@ class CustomerSignupView(SignupView):
 class StoreSignupView(SignupView):
   form_class = StoreSignupForm
   template_name = 'store/signup.html'
-  success_url = reverse_lazy('store_dashboard')
+  # success_url = reverse_lazy('store_dashboard')
+
+  def get_success_url(self):
+    store_uuid = self.user.id
+    return reverse_lazy('store_dashboard', kwargs={'pk': store_uuid})
 
   def form_valid(self, form):
     response = super().form_valid(form)
@@ -141,7 +145,10 @@ class CustomerLoginView(LoginView):
 
 class StoreLoginView(LoginView):
   template_name = 'store/login.html'
-  success_url = reverse_lazy('store_dashboard')
+
+  def get_success_url(self):
+    store_uuid = self.request.user.id
+    return reverse_lazy('store_dashboard', kwargs={'pk': store_uuid})
 
   def get(self, request, *args, **kwargs):
     next_url = request.GET.get('next')
@@ -174,11 +181,13 @@ class StoreLoginView(LoginView):
     return response
 
 
-class StoreDashboard(LoginRequiredMixin, StoreGroupRequiredMixin, TemplateView):
+class StoreDashboard(TemplateView):
   template_name = 'store/dashboard.html'
 
   def get_queryset(self):
-    return Product.objects.filter(store=self.request.user, is_deleted=False)  
+    # return Product.objects.filter(store=self.request.user, is_deleted=False)  
+    store_pk = self.kwargs.get('pk')
+    return Product.objects.filter(store_id=store_pk, is_deleted=False)
 
   def get_context_data(self, **kwargs):
     context = super().get_context_data(**kwargs)
