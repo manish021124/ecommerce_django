@@ -3,55 +3,256 @@
 
 {% block title %}Home{% endblock title %} 
 
+{% block link %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css"
+  integrity="sha512-17EgCFERpgZKcm0j0fEq1YCJuyAWdz9KUtv1EjVuaOz8pDnh/0nZxmU6BBXwaaxqoi9PQXnRWqlcDB027hgv9A=="
+  crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css"
+  integrity="sha512-yHknP1/AwR+yx26cB1y0cjvQUMvEa2PFzt1c9LlS4pRQ5NOTZFWbhBig+X9G9eYW/8m0/4OXNx8pxJ6z57x0dw=="
+  crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock link %}
+
 {% block content %}
 
-
   <!-- top picks -->
+  {% if product_list %}
   <div class="top-picks">
-    <div class="container mt-3">
-      <div class="row">
-        <div class="col-6">
-          <a class="topic" href="#">Top Picks</a>
-        </div>
-        <div class="col-6">
-          <a href="#" class="btn">Show More</a>
+    {% with product_list as products %}
+      {% with 'Top Picks' as section_title %}
+        {% include 'product_box.html' %}
+      {% endwith %}
+    {% endwith %}
+  </div>
+  {% endif %}
+
+  <!-- top picks collection -->
+  <div class="top-picks-collection m-4 d-flex justify-content-center">
+    <div class="d-flex p-3 sub-top-picks-collection">
+      <div class="m-2">
+        <div>
+          <a href="#">
+            <img src="{% static 'images/top-picks-coll/1.png' %}">
+          </a>
         </div>
       </div>
-
-      <div class="row">
-        {% for product in product_list %}
-          <div class="col-6 col-sm-4 col-md-3 col-lg-2">
-            <a href="{{ product.get_absolute_url }}">
-              <div class="card">
-                {% if product.discount_percentage %}
-                  <button type="button" class="discount-percent">{{ product.discount_percentage }}% off</button>
-                {% endif %}
-                <div class="card-img d-flex align-items-center">
-                  {% if product.primary_image_url %}
-                    <img src="{{ product.primary_image_url }}" class="img-fluid" alt="{{ product.name }}">
-                  {% else %}
-                    <img src="{% static 'images/placeholder.png' %}" class="img-fluid" alt="Placeholder Image">
-                  {% endif %}
-                </div>
-                <div class="card-body">
-                  <h4 class="card-title">{{ product.name }}</h4>
-                  <p class="card-text">
-                    {% if product.discount_percentage %}
-                      <span class="discount">{{ product.price }}</span>
-                      <span class="price">{{ product.total_amount }}</span>
-                    {% else %}
-                      <span class="price">{{ product.price }}</span>
-                    {% endif %}
-                  </p>
-                </div>
-              </div>
-            </a>
-          </div>
-        {% endfor %}
+      <div class="m-2">
+        <div>
+          <a href="#">
+            <img src="{% static 'images/top-picks-coll/2.webp' %}">
+          </a>
+        </div>
+      </div>
+      <div class="m-2">
+        <div>
+          <a href="#">
+            <img src="{% static 'images/top-picks-coll/3.png' %}">
+          </a>
+        </div>
+      </div>
+      <div class="m-2">
+        <div>
+          <a href="#">
+            <img src="{% static 'images/top-picks-coll/4.png' %}">
+          </a>
+        </div>
+      </div>
+      <div class="m-2">
+        <div>
+          <a href="#">
+            <img src="{% static 'images/top-picks-coll/5.png' %}">
+          </a>
+        </div>
+      </div>
+      <div class="m-2">
+        <div>
+          <a href="#">
+            <img src="{% static 'images/top-picks-coll/6.png' %}">
+          </a>
+        </div>
+      </div>
+      <div class="m-2">
+        <div>
+          <a href="#">
+            <img src="{% static 'images/top-picks-coll/7.webp' %}">
+          </a>
+        </div>
       </div>
     </div>
   </div>
-  
+
+  <!-- Accessories -->
+  <div class="accessories">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-4 p-3">
+          <a href="#">
+            <img class="img-fluid" src="{% static 'images/accessories/home-decor.jpg' %}">
+          </a>
+        </div>
+        <div class="col-sm">
+          <div class="row">
+            <div class="col-sm">
+              <a href="#">
+                <img class="img-fluid" src="{% static 'images/accessories/appliances.jpg' %}">
+              </a>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm">
+              <a href="#">
+                <img class="img-fluid" src="{% static 'images/accessories/gadjets.jpg' %}">
+              </a>
+            </div>
+            <div class="col-sm">
+              <a href="#">
+                <img class="img-fluid" src="{% static 'images/accessories/trending.jpg' %}">
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-md px-5">
+          <a href="#">
+            <img class="img-fluid" src="{% static 'images/accessories/kitchen.jpg' %}">
+          </a>
+        </div>
+        <div class="col-md px-5">
+          <a href="#">
+            <img class="img-fluid" src="{% static 'images/accessories/home.jpg' %}">
+          </a>
+        </div>
+        <div class="col-md px-5">
+          <a href="#">
+            <img class="img-fluid" src="{% static 'images/accessories/mobile.jpg' %}">
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- mobile -->
+  {% if mobiles %}
+  <div class="mobile">
+    {% with mobiles as products %}
+      {% with 'Mobile' as section_title %}
+        {% include 'product_box.html' %}
+      {% endwith %}
+    {% endwith %}
+  </div>
+  {% endif %}
+
+  <!--first banner -->
+  <div class="banner my-3">
+    <div class="container">
+      <a href="#">
+        <img class="img-fluid" src="{% static 'images/banner/first-banner.jpg' %}">
+      </a>
+    </div>
+  </div>
+
+  <!-- fashion slider -->
+  {% if fashions %}
+  <div class="fashion my-3 d-flex justify-content-center">
+    {% with fashions as products %}
+      {% with 'Fashion' as section_title %}
+        {% include 'product_box.html' with is_fashion=True %}
+      {% endwith %}
+    {% endwith %}
+  </div>
+  {% endif %}
+
+  <!--second banner -->
+  <div class="banner my-3">
+    <div class="container">
+      <a href="#">
+        <img class="img-fluid" src="{% static 'images/banner/second-banner.jpg' %}">
+      </a>
+    </div>
+  </div>
+
+  <!-- beauty and health -->
+  {% if beauties %}
+  <div class="health my-3 d-flex justify-content-center">
+    {% with beauties as products %}
+      {% with 'Beauty & Health' as section_title %}
+        {% include 'product_box.html' with is_beauty=True %}
+      {% endwith %}
+    {% endwith %}
+  </div>
+  {% endif %}
+
+  <!-- second accessories -->
+  <div class="accessories">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-3">
+          <a href="#">
+            <img class="img-fluid" src="{% static 'images/accessories2/sweater.jpg' %}">
+          </a>
+        </div>                        
+        <div class="col-md-6">
+          <a href="#">
+            <img class="img-fluid" src="{% static 'images/accessories2/books.png' %}">
+          </a>
+        </div>                        
+        <div class="col-md-3">
+          <a href="#">
+            <img class="img-fluid" src="{% static 'images/accessories2/health.jpg' %}">
+          </a>
+        </div>                            
+      </div>
+      <div class="row mt-2">
+        <div class="col-md">
+          <a href="#">
+            <img class="img-fluid" src="{% static 'images/accessories2/gift-cards.png' %}">
+          </a>
+        </div>
+        <div class="col-md">
+          <a href="#">
+            <img class="img-fluid" src="{% static 'images/accessories2/hookah.png' %}">
+          </a>
+        </div>
+        <div class="col-md">
+          <a href="#">
+            <img class="img-fluid" src="{% static 'images/accessories2/snacks.jpg' %}">
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- liquors -->
+  {% if liquors %}
+  <div class="liquor my-3 d-flex justify-content-center">
+    {% with liquors as products %}
+      {% with 'Liquors 🥂🍷🍺' as section_title %}
+        {% include 'product_box.html' with is_liquor=True %}
+      {% endwith %}
+    {% endwith %}
+  </div>
+  {% endif %}
+
+  <!-- just for you -->
+  {% if just_for_you %}
+  <div class="just-for-you my-3 d-flex justify-content-center">
+    {% with just_for_you as products %}
+      {% with 'Just For You' as section_title %}
+        {% include 'product_box.html' with is_justForYou=True %}
+      {% endwith %}
+    {% endwith %}
+  </div>
+  {% endif %}
+
+
 
 
 {% endblock content %}
+
+{% block scripts %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"
+  integrity="sha512-XtmMtDEcNz2j7ekrtHvOVR4iwwaD6o/FUJe6+Zq+HgcCsk3kj4uSQQR8weQ2QVj1o0Pk6PwYLohm206ZzNfubg=="
+  crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="{% static "js/slider.js" %}"></script>
+{% endblock scripts %}

@@ -13,11 +13,6 @@ class ProductDetailView(DetailView):
   model = Product
   context_object_name = 'product'
   template_name = 'products\product_detail.html'
-
-  def get_context_data(self, **kwargs):
-    context = super().get_context_data(**kwargs)
-    context['store'] = self.object.store
-    return context
   
 
 class ProductCreateView(LoginRequiredMixin, StoreGroupRequiredMixin, CreateView):

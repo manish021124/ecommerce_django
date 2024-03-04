@@ -10,6 +10,8 @@ from products.models import Product, Category
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import Group
+from random import sample
+from django.db.models import Q
 
 # permissions
 class CustomerGroupRequiredMixin(UserPassesTestMixin):
@@ -34,19 +36,70 @@ class HomePageView(CustomerGroupAndGuestRequiredMixin, ListView):
 
   def get_queryset(self):
     # retrieve products with stock greater than 0
-    return Product.objects.filter(stock__gt=0, is_deleted=False)  
+    all_products = Product.objects.filter(stock__gt=0, is_deleted=False)  
+
+    # randomize the all_products and get only 12 products
+    top_picks = sample(list(all_products), min(12, all_products.count()))
+
+    return top_picks
 
   def get_context_data(self, **kwargs):
     context = super().get_context_data(**kwargs)
- 
+
+    all_products = Product.objects.filter(stock__gt=0, is_deleted=False) 
+
+    mobile_category = Category.objects.get(name="Mobile")
+    fashion_category = Category.objects.get(name="Fashion")
+    beauty_category = Category.objects.get(name="Beauty & Health")
+    liquor_category = Category.objects.get(name="Liquor")
+
+    # retrieve products belongning to mobile category or its child categories
+    all_mobiles = Product.objects.filter(
+      Q(category=mobile_category) | Q(category__parent=mobile_category),
+      stock__gt=0, is_deleted=False
+    )
+    all_fashions = Product.objects.filter(
+      Q(category=fashion_category) | Q(category__parent=fashion_category),
+      stock__gt=0, is_deleted=False
+    )
+    all_beauty = Product.objects.filter(
+      Q(category=beauty_category) | Q(category__parent=beauty_category),
+      stock__gt=0, is_deleted=False
+    )
+    all_liquors = Product.objects.filter(
+      Q(category=liquor_category) | Q(category__parent=liquor_category),
+      stock__gt=0, is_deleted=False
+    )
+
+    mobiles = sample(list(all_mobiles), min(12, all_mobiles.count()))
+    fashions = sample(list(all_fashions), min(9, all_fashions.count()))
+    beauties = sample(list(all_beauty), min(9, all_beauty.count()))
+    liquors = sample(list(all_liquors), min(9, all_liquors.count()))
+    just_for_you = sample(list(all_products), min(13, all_products.count()))
+
+    context['mobiles'] = mobiles
+    context['fashions'] = fashions
+    context['beauties'] = beauties
+    context['liquors'] = liquors
+    context['just_for_you'] = just_for_you
+
     # displaying images
-    for product in context['product_list']:
+    self.set_primary_image_urls(context['product_list'])
+    self.set_primary_image_urls(context['mobiles'])
+    self.set_primary_image_urls(context['fashions'])
+    self.set_primary_image_urls(context['beauties'])
+    self.set_primary_image_urls(context['liquors'])
+    self.set_primary_image_urls(context['just_for_you'])
+
+    return context
+
+  # to reduce code repetency
+  def set_primary_image_urls(self, products):
+    for product in products:
       if product.images.exists():
         product.primary_image_url = product.images.first().image.url
       else:
         product.primary_image_url = None
-
-    return context
 
 
 class RegisterPage(TemplateView):
