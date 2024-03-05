@@ -596,7 +596,8 @@
 
 
 /* just for you */
-.just-for-you .row p{
+.just-for-you .row p,
+.categories .row p {
   color: var(--textColor);
   font-size: 26px;
   font-weight: bolder;

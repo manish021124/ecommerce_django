@@ -136,7 +136,7 @@
   <div class="mobile">
     {% with mobiles as products %}
       {% with 'Mobile' as section_title %}
-        {% include 'product_box.html' %}
+        {% include 'product_box.html' with category_name='Mobile' %}
       {% endwith %}
     {% endwith %}
   </div>
@@ -156,7 +156,7 @@
   <div class="fashion my-3 d-flex justify-content-center">
     {% with fashions as products %}
       {% with 'Fashion' as section_title %}
-        {% include 'product_box.html' with is_fashion=True %}
+        {% include 'product_box.html' with is_fashion=True category_name='Fashion' %}
       {% endwith %}
     {% endwith %}
   </div>
@@ -176,7 +176,7 @@
   <div class="health my-3 d-flex justify-content-center">
     {% with beauties as products %}
       {% with 'Beauty & Health' as section_title %}
-        {% include 'product_box.html' with is_beauty=True %}
+        {% include 'product_box.html' with is_beauty=True category_name='Beauty & Health' %}
       {% endwith %}
     {% endwith %}
   </div>
@@ -227,7 +227,7 @@
   <div class="liquor my-3 d-flex justify-content-center">
     {% with liquors as products %}
       {% with 'Liquors 🥂🍷🍺' as section_title %}
-        {% include 'product_box.html' with is_liquor=True %}
+        {% include 'product_box.html' with is_liquor=True category_name='Liquor' %}
       {% endwith %}
     {% endwith %}
   </div>

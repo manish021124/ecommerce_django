@@ -1,15 +1,16 @@
+{% comment %} included in home.html {% endcomment %}
 {% load static %}
 
 <div class="container mt-3">
   <div class="row">
-    {% if is_justForYou %}
+    {% if is_justForYou or is_categoryPage %}
       <p>{{ section_title }}</p>
     {% else %}
       <div class="col-6">
-        <a class="topic" href="#">{{ section_title }}</a>
+        <a class="topic" href="{% if category_name %}{% url 'product_by_category' category_name %}{% else %}#{% endif %}">{{ section_title }}</a>
       </div>
       <div class="col-6">
-        <a href="#" class="btn">Show More</a>
+        <a href="{% if category_name %}{% url 'product_by_category' category_name %}{% else %}#{% endif %}" class="btn">Show More</a>
       </div>
     {% endif %}
   </div>

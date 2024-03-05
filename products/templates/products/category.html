@@ -1,0 +1,23 @@
+{% extends '_base.html' %} 
+{% load static %}
+
+{% block title %}{{ category }}{% endblock title %} 
+
+{% block content %}
+  <header>
+    <h1>{{ category }}</h1>
+    {% for category, total_products in category_totals.items %}
+      <p>Total Products: {{ total_products }}</p>
+    {% endfor %}
+  </header>
+
+  {% if products %}
+  <div class="categories">
+    {% with products as products %}
+      {% with 'Products' as section_title %}
+        {% include 'product_box.html' with is_categoryPage=True %}
+      {% endwith %}
+    {% endwith %}
+  </div>
+  {% endif %}
+{% endblock content %}

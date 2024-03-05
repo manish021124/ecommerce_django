@@ -14,12 +14,12 @@
     <tbody>
       {% for order in orders %}
         <tr>
-          <td><a href="{% url 'orders:order_detail' pk=order.pk %}">{{ order.order_number }}</a></td>
+          <td><a href="{% url 'order_detail' pk=order.pk %}">{{ order.order_number }}</a></td>
           <td>{{ order.date_ordered }}</td>
           <td>{{ order.total_amount_override }}</td>
           {% comment %} <td>{{ order.status }}</td> {% endcomment %}
           {% if order.status == 'Pending' or order.status == 'Processing' %}
-            <td><a href="{% url 'orders:order_cancel' pk=order.pk %}" class="btn btn-sm btn-danger">Cancel Order</a></td>
+            <td><a href="{% url 'order_cancel' pk=order.pk %}" class="btn btn-sm btn-danger">Cancel Order</a></td>
           {% else %}
             <td></td>
           {% endif %}

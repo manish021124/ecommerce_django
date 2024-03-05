@@ -1,13 +1,15 @@
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render
-from django.views.generic import DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import DetailView, CreateView, UpdateView, DeleteView, TemplateView
 from .models import Product, Category
 from .forms import ProductAddForm, ProductUpdateForm, ProductImageForm, ProductImageFormSet
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from user.views import StoreGroupRequiredMixin
-
+from django.shortcuts import get_object_or_404
+from random import shuffle
+from django.db.models import Q
 
 class ProductDetailView(DetailView):
   model = Product
@@ -149,3 +151,32 @@ class ProductDeleteView(LoginRequiredMixin, StoreGroupRequiredMixin, DeleteView)
     except Exception as e:
       messages.error(request, f"An error occured while deleting the product: {str(e)}")
     return HttpResponseRedirect(self.get_success_url())
+
+
+class ProductByCategoryView(TemplateView):
+  template_name = 'products/category.html'
+
+  def get_context_data(self, **kwargs):
+    context = super().get_context_data(**kwargs)
+    category_name = self.kwargs['category']
+    category = get_object_or_404(Category, name=category_name)
+    queryset = Product.objects.filter(
+      Q(category=category) | Q(category__parent=category) | Q(category__parent__parent=category),
+      stock__gt=0,
+      is_deleted=False
+    )
+    # get all products and suffle them
+    products = list(queryset)
+    shuffle(products)
+    total_products = len(products)
+    context["products"] = products
+    context["category_totals"] = {category_name: total_products}
+
+    for product in context["products"]:
+      if product.images.exists():
+        product.primary_image_url = product.images.first().image.url
+      else:
+        product.primary_image_url = None
+
+    return context
+  

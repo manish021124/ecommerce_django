@@ -75,12 +75,12 @@
         <ul class="navbar-nav">
           {% for category in categories %}
             <li class="nav-item dropdown">
-              <a class="nav-link dropbtn" href="#">{{ category.name }}</a>
+              <a class="nav-link dropbtn" href="{% url 'product_by_category' category.name %}">{{ category.name }}</a>
               {% if category.children.exists %}
                 <ul class="dropdown-menu">
                   {% for child in category.children.all %}
                     <li class="dropleft">
-                      <a class="dropdown-item dropbtn" href="#">
+                      <a class="dropdown-item dropbtn" href="{% url 'product_by_category' child.name %}">
                         {{ child.name }}
                         {% if child.children.exists %}
                           <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor"
@@ -94,7 +94,7 @@
                       {% if child.children.exists %}
                         <ul class="dropleft-menu">
                           {% for subchild in child.children.all %}
-                            <li><a class="dropdown-item" href="#">{{ subchild.name }}</a>
+                            <li><a class="dropdown-item" href="{% url 'product_by_category' subchild.name %}">{{ subchild.name }}</a>
 
                               <!-- IF NEEDED -->
 

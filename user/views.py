@@ -48,33 +48,10 @@ class HomePageView(CustomerGroupAndGuestRequiredMixin, ListView):
 
     all_products = Product.objects.filter(stock__gt=0, is_deleted=False) 
 
-    mobile_category = Category.objects.get(name="Mobile")
-    fashion_category = Category.objects.get(name="Fashion")
-    beauty_category = Category.objects.get(name="Beauty & Health")
-    liquor_category = Category.objects.get(name="Liquor")
-
-    # retrieve products belongning to mobile category or its child categories
-    all_mobiles = Product.objects.filter(
-      Q(category=mobile_category) | Q(category__parent=mobile_category),
-      stock__gt=0, is_deleted=False
-    )
-    all_fashions = Product.objects.filter(
-      Q(category=fashion_category) | Q(category__parent=fashion_category),
-      stock__gt=0, is_deleted=False
-    )
-    all_beauty = Product.objects.filter(
-      Q(category=beauty_category) | Q(category__parent=beauty_category),
-      stock__gt=0, is_deleted=False
-    )
-    all_liquors = Product.objects.filter(
-      Q(category=liquor_category) | Q(category__parent=liquor_category),
-      stock__gt=0, is_deleted=False
-    )
-
-    mobiles = sample(list(all_mobiles), min(12, all_mobiles.count()))
-    fashions = sample(list(all_fashions), min(9, all_fashions.count()))
-    beauties = sample(list(all_beauty), min(9, all_beauty.count()))
-    liquors = sample(list(all_liquors), min(9, all_liquors.count()))
+    mobiles = self.get_sample_products('Mobile', 12)
+    fashions = self.get_sample_products('Fashion', 9)
+    beauties = self.get_sample_products('Beauty & Health', 9)
+    liquors = self.get_sample_products('Liquor', 9)
     just_for_you = sample(list(all_products), min(13, all_products.count()))
 
     context['mobiles'] = mobiles
@@ -94,6 +71,14 @@ class HomePageView(CustomerGroupAndGuestRequiredMixin, ListView):
     return context
 
   # to reduce code repetency
+  def get_sample_products(self, category_name, count):
+    category = Category.objects.filter(name=category_name).first()
+    all_products = Product.objects.filter(
+      Q(category=category) | Q(category__parent=category) | Q(category__parent__parent=category),
+      stock__gt=0, is_deleted=False
+    )
+    return sample(list(all_products), min(count, all_products.count()))
+
   def set_primary_image_urls(self, products):
     for product in products:
       if product.images.exists():

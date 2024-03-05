@@ -10,7 +10,7 @@
       {% csrf_token %}
       <button type="submit" class="btn btn-sm btn-danger">Yes, Cancel Order</button>
     </form>
-    <a href="{% url 'orders:order_list' %}" class="ms-3 mt-2">No, Go Back to Order List</a>
+    <a href="{% url 'order_list' %}" class="ms-3 mt-2">No, Go Back to Order List</a>
   </div>
 </div>
 {% endblock content %}

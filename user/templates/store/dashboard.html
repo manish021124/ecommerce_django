@@ -21,48 +21,11 @@
 
   {% if products %}
   <div class="top-picks">
-    <div class="container mt-3">
-      <div class="row">
-        <div class="col-6">
-          <a class="topic" href="#">Products</a>
-        </div>
-        <div class="col-6">
-          <a href="#" class="btn">Show More</a>
-        </div>
-      </div>
-
-      <div class="row">
-        {% for product in products %}
-          <div class="col-6 col-sm-4 col-md-3 col-lg-2">
-            <a href="{{ product.get_absolute_url }}">
-              <div class="card">
-                {% if product.discount_percentage %}
-                  <button type="button" class="discount-percent">{{ product.discount_percentage }}% off</button>
-                {% endif %}
-                <div class="card-img d-flex align-items-center">
-                  {% if product.primary_image_url %}
-                    <img src="{{ product.primary_image_url }}" class="img-fluid" alt="{{ product.name }}">
-                  {% else %}
-                    <img src="{% static 'images/placeholder.png' %}" class="img-fluid" alt="Placeholder Image">
-                  {% endif %}
-                </div>
-                <div class="card-body">
-                  <h4 class="card-title">{{ product.name }}</h4>
-                  <p class="card-text">
-                    {% if product.discount_percentage %}
-                      <span class="discount">{{ product.price }}</span>
-                      <span class="price">{{ product.total_amount }}</span>
-                    {% else %}
-                      <span class="price">{{ product.price }}</span>
-                    {% endif %}
-                  </p>
-                </div>
-              </div>
-            </a>
-          </div>
-        {% endfor %}
-      </div>
-    </div>
+    {% with products as products %}
+      {% with 'Products' as section_title %}
+        {% include 'product_box.html' %}
+      {% endwith %}
+    {% endwith %}
   </div>
   {% endif %}
   
