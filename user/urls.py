@@ -12,9 +12,11 @@ from .views import (
   ProfileUpdateView,
   StoreProfileCustomerView,
   CustomerProfileStoreView,
+  CustomPasswordChangeView
 )
 
 urlpatterns = [
+  path('accounts/password/change/', CustomPasswordChangeView.as_view(), name='password_change'),
   path('profile/', ProfileDetailView.as_view(), name='profile_detail'),  
   path('profile/update/', ProfileUpdateView.as_view(), name='profile_update'),
   path('accounts/store/signup', StoreSignupView.as_view(), name='store_signup'),

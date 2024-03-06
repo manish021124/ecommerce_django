@@ -19,7 +19,7 @@
   <div class="top-picks">
     {% with product_list as products %}
       {% with 'Top Picks' as section_title %}
-        {% include 'product_box.html' %}
+        {% include 'products/product_box.html' %}
       {% endwith %}
     {% endwith %}
   </div>
@@ -136,7 +136,7 @@
   <div class="mobile">
     {% with mobiles as products %}
       {% with 'Mobile' as section_title %}
-        {% include 'product_box.html' with category_name='Mobile' %}
+        {% include 'products/product_box.html' with category_name='Mobile' %}
       {% endwith %}
     {% endwith %}
   </div>
@@ -156,7 +156,7 @@
   <div class="fashion my-3 d-flex justify-content-center">
     {% with fashions as products %}
       {% with 'Fashion' as section_title %}
-        {% include 'product_box.html' with is_fashion=True category_name='Fashion' %}
+        {% include 'products/product_box.html' with is_fashion=True category_name='Fashion' %}
       {% endwith %}
     {% endwith %}
   </div>
@@ -176,7 +176,7 @@
   <div class="health my-3 d-flex justify-content-center">
     {% with beauties as products %}
       {% with 'Beauty & Health' as section_title %}
-        {% include 'product_box.html' with is_beauty=True category_name='Beauty & Health' %}
+        {% include 'products/product_box.html' with is_beauty=True category_name='Beauty & Health' %}
       {% endwith %}
     {% endwith %}
   </div>
@@ -227,7 +227,7 @@
   <div class="liquor my-3 d-flex justify-content-center">
     {% with liquors as products %}
       {% with 'Liquors 🥂🍷🍺' as section_title %}
-        {% include 'product_box.html' with is_liquor=True category_name='Liquor' %}
+        {% include 'products/product_box.html' with is_liquor=True category_name='Liquor' %}
       {% endwith %}
     {% endwith %}
   </div>
@@ -238,7 +238,7 @@
   <div class="just-for-you my-3 d-flex justify-content-center">
     {% with just_for_you as products %}
       {% with 'Just For You' as section_title %}
-        {% include 'product_box.html' with is_justForYou=True %}
+        {% include 'products/product_box.html' with is_justForYou=True %}
       {% endwith %}
     {% endwith %}
   </div>

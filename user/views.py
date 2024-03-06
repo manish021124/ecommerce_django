@@ -1,7 +1,7 @@
 from django.urls import reverse_lazy
 from django.shortcuts import redirect, reverse, render
 from django.views.generic import TemplateView, DetailView, UpdateView, FormView
-from allauth.account.views import SignupView, LoginView
+from allauth.account.views import SignupView, LoginView, PasswordChangeView
 from .forms import CustomerSignupForm, StoreSignupForm, ProfileForm
 from django.contrib import messages
 from django.views.generic import ListView
@@ -12,6 +12,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import Group
 from random import sample
 from django.db.models import Q
+from django.conf import settings
+from allauth.account.forms import ChangePasswordForm
 
 # permissions
 class CustomerGroupRequiredMixin(UserPassesTestMixin):
@@ -32,7 +34,7 @@ class CustomerGroupAndGuestRequiredMixin(UserPassesTestMixin):
 class HomePageView(CustomerGroupAndGuestRequiredMixin, ListView):
   model = Product
   context_object_name = 'product_list'
-  template_name = 'home.html'
+  template_name = 'homepage/home.html'
 
   def get_queryset(self):
     # retrieve products with stock greater than 0
@@ -88,7 +90,7 @@ class HomePageView(CustomerGroupAndGuestRequiredMixin, ListView):
 
 
 class RegisterPage(TemplateView):
-  template_name = 'register.html'
+  template_name = 'account/register.html'
 
 
 # overriding default allauth signup view
@@ -252,7 +254,7 @@ class StoreProfileCustomerView(LoginRequiredMixin, BaseStoreDashboard):
 
 class BaseProfileDetailView(LoginRequiredMixin, DetailView):
   model = Profile
-  template_name = 'profile.html'
+  template_name = 'account/profile.html'
   context_object_name = 'profile'
 
   def get_object(self, queryset=None):
@@ -265,7 +267,7 @@ class ProfileDetailView(BaseProfileDetailView):
 
 # for store to view customers profile
 class CustomerProfileStoreView(StoreGroupRequiredMixin, BaseProfileDetailView):
-  template_name = 'customer_profile.html'
+  template_name = 'account/customer_profile.html'
 
   def get_object(self, queryset=None):
     uuid = self.kwargs.get('pk')
@@ -275,7 +277,7 @@ class CustomerProfileStoreView(StoreGroupRequiredMixin, BaseProfileDetailView):
 class ProfileUpdateView(LoginRequiredMixin, UpdateView):
   model = Profile
   form_class = ProfileForm
-  template_name = 'profile_update.html'
+  template_name = 'account/profile_update.html'
   success_url = '/profile/'
 
   def get_object(self, queryset=None):
@@ -288,4 +290,24 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
       form.fields.pop('gender', None)
       form.fields.pop('birth_date', None)
     return form
+
+  def form_valid(self, form):
+    messages.success(self.request, "Profile updated successfully.")
+    return super().form_valid(form)
+
+  def form_invalid(self, form):
+    messages.error(self.request, "Please correct the errors below.")
+    return super().form_invalid(form)
+  
+
+# override allauth password change view
+class CustomPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
+  success_url = reverse_lazy('home')
+
+  def form_invalid(self, form):
+    response = super().form_invalid(form)
+    for field, errors in form.errors.items():
+      for error in errors:
+        messages.error(self.request, f'{field}: {error}')
+    return response
   

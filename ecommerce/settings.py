@@ -148,7 +148,7 @@ AUTH_USER_MODEL = 'user.CustomUser'
 
 LOGIN_REDIRECT_URL = 'home'
 
-ACCOUNT_LOGOUT_REDIRECT = 'home'
+ACCOUNT_LOGOUT_REDIRECT_URL = 'home'
 
 # django-allauth config
 SITE_ID = 1
@@ -164,6 +164,7 @@ ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
 
 ACCOUNT_UNIQUE_EMAIL = True
+
 
 # for adding custom fields in allauth signup form
 # ACCOUNT_FORMS = {'signup': 'user.forms.CustomSignupForm'}

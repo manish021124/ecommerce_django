@@ -15,7 +15,7 @@
   <div class="categories">
     {% with products as products %}
       {% with 'Products' as section_title %}
-        {% include 'product_box.html' with is_categoryPage=True %}
+        {% include 'products/product_box.html' with is_categoryPage=True %}
       {% endwith %}
     {% endwith %}
   </div>
