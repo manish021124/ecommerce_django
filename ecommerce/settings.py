@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    'django.contrib.sites',
 
     'user',
     'products',
@@ -151,19 +153,17 @@ LOGIN_REDIRECT_URL = 'home'
 ACCOUNT_LOGOUT_REDIRECT_URL = 'home'
 
 # django-allauth config
-SITE_ID = 1
+SITE_ID = 3
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = 'gyapu@ecommercesite.com'
 
 ACCOUNT_SESSION_REMEMBER = True
-
 ACCOUNT_USERNAME_REQUIRED = False
-
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
-
 ACCOUNT_EMAIL_REQUIRED = True
-
 ACCOUNT_UNIQUE_EMAIL = True
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
 
 # for adding custom fields in allauth signup form
