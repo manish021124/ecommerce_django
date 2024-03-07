@@ -11,7 +11,10 @@
       {{ field }}
     </div>
     {% endfor %}
-    <button type="submit" class="btn btn-warning">Sign Up</button>
+    <div>
+      <button type="submit" class="btn btn-warning">Sign Up</button>
+      <span>Already have an account? <a href="{% url 'store_login' %}">Sign In</a></span>
+    </div>
   </form>
 </div>
 {% endblock content %}

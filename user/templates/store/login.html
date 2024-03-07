@@ -12,7 +12,13 @@
       {{ field }}
     </div>
     {% endfor %}
-    <button type="submit" class="btn btn-warning">Sign In</button>
+    <div class="mb-3" style="margin-top: -23px; margin-left: 70px; font-size: 14px;">
+      <a href="{% url 'account_reset_password' %}">Forgot Password?</a>
+    </div>
+    <div>
+      <button type="submit" class="btn btn-warning">Sign In</button>
+      <span>Don't have an account? <a href="{% url 'store_signup' %}">Sign Up</a></span>
+    </div>
   </form>
 </div>
 {% endblock content %}
