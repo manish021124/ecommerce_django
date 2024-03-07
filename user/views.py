@@ -30,6 +30,17 @@ class CustomerGroupAndGuestRequiredMixin(UserPassesTestMixin):
     user = self.request.user
     return not user.is_authenticated or user.groups.filter(name='customer').exists()
 
+  # when user in store grooup tries to visit homepage redirect to store dashboard instead of homepage
+  def handle_no_permission(self):
+    user = self.request.user
+    if user.is_authenticated and user.groups.filter(name='store').exists():
+      return redirect('store_dashboard')
+    else:
+      if user.is_authenticated:
+        return redirect('home')
+      else:
+        return redirect('register')
+
 
 class HomePageView(CustomerGroupAndGuestRequiredMixin, ListView):
   model = Product
