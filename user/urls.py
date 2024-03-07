@@ -12,10 +12,12 @@ from .views import (
   ProfileUpdateView,
   StoreProfileCustomerView,
   CustomerProfileStoreView,
-  CustomPasswordChangeView
+  CustomPasswordChangeView,
+  UserDeleteView,
 )
 
 urlpatterns = [
+  path('accounts/delete/<uuid:pk>/', UserDeleteView.as_view(), name='delete_account'),
   path('accounts/password/change/', CustomPasswordChangeView.as_view(), name='password_change'),
   path('profile/', ProfileDetailView.as_view(), name='profile_detail'),  
   path('profile/update/', ProfileUpdateView.as_view(), name='profile_update'),

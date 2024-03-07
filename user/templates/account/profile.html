@@ -15,8 +15,9 @@ Gyapu - {{ profile.user.username }}
     <p>Gender: {{ profile.get_gender_display }}</p>
     {% endif %}
 
-    <a href="{% url 'profile_update' %}" class="btn btn-warning">Edit Profile</a>
-    <a href="{% url 'password_change' %}" class="btn btn-warning">Change Password</a>
-    <a href="{% url 'account_email' %}" class="btn btn-warning">Emails</a>
+    <a href="{% url 'profile_update' %}" class="btn btn-warning mt-2">Edit Profile</a>
+    <a href="{% url 'password_change' %}" class="btn btn-warning mt-2">Change Password</a>
+    <a href="{% url 'account_email' %}" class="btn btn-warning mt-2">Emails</a>
+    <a href="{% url 'delete_account' user.id %}" class="btn btn-danger mt-2">Delete Account</a>
   </div>
 {% endblock content %}

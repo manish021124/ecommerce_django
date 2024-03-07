@@ -1,0 +1,18 @@
+{% extends "_base.html" %}
+
+{% block title %}Delete Account{% endblock title %}
+
+{% block content %}
+  <div>
+    <h2>Delete Account</h2>
+    <p>Are you sure you want to delete your account?</p>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+          <label for="password" class="form-label">Enter your password:</label>
+          <input type="password" id="password" name="password">
+        </div>
+        <input type="submit" value="Confirm Deletion" class="btn btn-warning">
+    </form>
+  </div>
+{% endblock content %}

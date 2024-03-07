@@ -1,19 +1,19 @@
 from django.urls import reverse_lazy
 from django.shortcuts import redirect, reverse, render
-from django.views.generic import TemplateView, DetailView, UpdateView, FormView
+from django.views.generic import TemplateView, DetailView, UpdateView, FormView, ListView, DeleteView
 from allauth.account.views import SignupView, LoginView, PasswordChangeView
 from .forms import CustomerSignupForm, StoreSignupForm, ProfileForm
 from django.contrib import messages
-from django.views.generic import ListView
 from .models import Profile, CustomUser
 from products.models import Product, Category
-from django.contrib.auth import login
+from django.contrib.auth import login, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import Group
 from random import sample
 from django.db.models import Q
 from django.conf import settings
 from allauth.account.forms import ChangePasswordForm
+from django.http import HttpResponseRedirect
 
 # permissions
 class CustomerGroupRequiredMixin(UserPassesTestMixin):
@@ -297,6 +297,7 @@ class ProfileUpdateView(LoginRequiredMixin, UpdateView):
   # for excluding gender and birthdate fields for stores
   def get_form(self, form_class=None):
     form = super().get_form(form_class)
+    form.fields.pop('email', None)
     if self.request.user.groups.filter(name='store').exists():
       form.fields.pop('gender', None)
       form.fields.pop('birth_date', None)
@@ -322,3 +323,21 @@ class CustomPasswordChangeView(LoginRequiredMixin, PasswordChangeView):
         messages.error(self.request, f'{field}: {error}')
     return response
   
+
+class UserDeleteView(LoginRequiredMixin, DeleteView):
+  model = CustomUser
+  template_name = 'account/delete.html'
+  success_url = reverse_lazy('home')
+
+  def post(self, request, *args, **kwargs):
+    password = request.POST.get('password', '')
+    user = self.get_object()
+    if authenticate(username=user.username, password=password) is None:
+      messages.error(request, 'Incorrect password')
+      return self.render_to_response(self.get_context_data())
+    else:
+      self.object = user
+      success_url = self.get_success_url()
+      self.object.delete()
+      messages.success(request, 'Your account has been deleted successfully.')
+      return HttpResponseRedirect(success_url)
