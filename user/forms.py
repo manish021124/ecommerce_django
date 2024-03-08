@@ -53,6 +53,16 @@ class BaseSignupForm(SignupForm):
     user.save()
     return user
 
+  def clean_email(self):
+    email = self.cleaned_data.get('email')
+    if email and CustomUser.objects.filter(email=email).exists():
+      user = CustomUser.objects.get(email=email)
+      if not user.is_active:
+        raise forms.ValidationError("This email has been already used and cannot be registered again.")
+      else:
+        raise forms.ValidationError("This email is already registered. Please Login instead.")
+    return email
+
 
 class CustomerSignupForm(BaseSignupForm):
   pass

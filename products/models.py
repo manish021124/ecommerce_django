@@ -61,8 +61,15 @@ class Product(models.Model):
 
   # override default delete function
   def delete(self, using=None, keep_parents=False):
+    from carts.models import CartItem
     self.is_deleted = True
     self.save()
+    # cart_items = CartItem.objects.filter(product=self.id) # retrieve cartitems related to product
+    # for cart_item in cart_items:
+    #   cart = cart_item.cart # gets cart of related cartitems
+    #   cart_item.delete()
+    #   if cart.items.count() == 0: # if cart doesn't have any items
+    #     cart.delete()
   
 
 class ProductImage(models.Model):

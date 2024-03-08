@@ -6,7 +6,7 @@ from .forms import CustomerSignupForm, StoreSignupForm, ProfileForm
 from django.contrib import messages
 from .models import Profile, CustomUser
 from products.models import Product, Category
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import Group
 from random import sample
@@ -116,8 +116,12 @@ class CustomerSignupView(SignupView):
     response = super().form_valid(form)
     user = self.user
 
-    customer_group = Group.objects.get(name='customer')
-    user.groups.add(customer_group)
+    if user:
+      customer_group = Group.objects.get(name='customer')
+      user.groups.add(customer_group)
+    else:
+      messages.error(self.request, "An error occurred during user registration.")
+      return redirect(reverse('account_login'))
     return response
 
   # redirecting to register page on signup error
@@ -140,8 +144,13 @@ class StoreSignupView(SignupView):
     response = super().form_valid(form)
     user = self.user
 
-    store_group = Group.objects.get(name='store')
-    user.groups.add(store_group)
+    if user:
+      store_group = Group.objects.get(name='store')
+      user.groups.add(store_group)
+    else:
+      messages.error(self.request, "An error occurred during user registration.")
+      return redirect(reverse('store_signup'))
+    
     return response
 
   def form_invalid(self, form):
@@ -168,6 +177,9 @@ class CustomerLoginView(LoginView):
     if form.is_valid():
       user = form.user
       if user is not None and user.groups.filter(name='customer').exists():
+        if not user.is_active:
+          messages.error(self.request, "Your account has been deleted.")
+          return redirect(reverse('register'))
         login(self.request, user)
         next_url = self.request.session.get('next')
         if next_url:
@@ -204,6 +216,9 @@ class StoreLoginView(LoginView):
     if form.is_valid():
       user = form.user
       if user is not None and user.groups.filter(name='store').exists():
+        if not user.is_active:
+          messages.error(self.request, "Your account has been deleted.")
+          return redirect(reverse_lazy('store_signup'))
         login(self.request, user)
         next_url = self.request.session.get('next')
         if next_url:
@@ -329,15 +344,23 @@ class UserDeleteView(LoginRequiredMixin, DeleteView):
   template_name = 'account/delete.html'
   success_url = reverse_lazy('home')
 
+  def get_object(self, queryset=None):
+    return self.request.user
+
   def post(self, request, *args, **kwargs):
     password = request.POST.get('password', '')
     user = self.get_object()
-    if authenticate(username=user.username, password=password) is None:
+    if not authenticate(username=user.username, password=password):
       messages.error(request, 'Incorrect password')
-      return self.render_to_response(self.get_context_data())
-    else:
+      return HttpResponseRedirect(self.request.path_info) # path_info: attribute of HttpRequest which represents path of requested url
+    
+    try:
       self.object = user
       success_url = self.get_success_url()
-      self.object.delete()
+      self.object.delete() # calls delete function in model
+      logout(request)
       messages.success(request, 'Your account has been deleted successfully.')
       return HttpResponseRedirect(success_url)
+    except Exception as e:
+      messages.error(request, f'An error occured while deleting your account: {str(e)}')
+      return HttpResponseRedirect(self.request.path_info)

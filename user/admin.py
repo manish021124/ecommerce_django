@@ -10,7 +10,7 @@ class CustomUserAdmin(UserAdmin):
   # add_form = CustomUserCreationForm
   # form = CustomUserChangeForm
   model = CustomUser
-  list_display = ['email', 'full_name', 'mobile', 'get_groups', 'is_superuser',]
+  list_display = ['email', 'full_name', 'mobile', 'get_groups', 'is_superuser', 'is_active',]
 
   def get_groups(self, obj):
     return ", ".join([group.name for group in obj.groups.all()])
