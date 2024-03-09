@@ -29,6 +29,7 @@ urlpatterns = [
   path('accounts/signup/', CustomerSignupView.as_view(), name='account_signup'),  # overriding default allauth urls
   path('accounts/login/', CustomerLoginView.as_view(), name='account_login'),
   path('accounts/register/', RegisterPage.as_view(), name='register'),
-  path('accounts/', include("allauth.urls")),
+  path('accounts/', include('allauth.urls')),
+  path('accounts/', include('allauth.socialaccount.urls')),
   path('', HomePageView.as_view(), name='home'),
 ]

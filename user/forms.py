@@ -2,43 +2,43 @@ from django import forms
 from .models import CustomUser, Profile
 from allauth.account.forms import SignupForm
 from django.contrib.auth import get_user_model
-# from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 
 #updates user addition form in admin panel
-# class CustomUserCreationForm(UserCreationForm):
-#   full_name = forms.CharField(max_length=50, label='Full Name', required=True)
-#   mobile = forms.CharField(max_length=10, label='Mobile', required=True)
+class CustomUserCreationForm(UserCreationForm):
+  full_name = forms.CharField(max_length=50, label='Full Name', required=True)
+  mobile = forms.CharField(max_length=10, label='Mobile', required=True)
 
-#   class Meta:
-#     model = get_user_model()
-#     fields = ('email', 'username', 'full_name', 'mobile')
+  class Meta:
+    model = get_user_model()
+    fields = ('email', 'username', 'full_name', 'mobile')
 
-#   def save(self, commit=True):
-#     user = super(CustomUserCreationForm, self).save(commit=False)
-#     user.full_name = self.cleaned_data.get('full_name', '')
-#     user.mobile = self.cleaned_data.get('mobile', '')
-#     if commit:
-#       user.save()
-#     return user
+  def save(self, commit=True):
+    user = super().save(commit=False)
+    user.full_name = self.cleaned_data.get('full_name', '')
+    user.mobile = self.cleaned_data.get('mobile', '')
+    if commit:
+      user.save()
+    return user
 
 
-# #to allow admin to modify details and to include additional fields in user edit form
-# class CustomUserChangeForm(UserChangeForm):
-#   full_name = forms.CharField(max_length=50, label='Full Name', required=True)
-#   mobile = forms.CharField(max_length=10, label='Mobile', required=True)
+#to allow admin to modify details and to include additional fields in user edit form
+class CustomUserChangeForm(UserChangeForm):
+  full_name = forms.CharField(max_length=50, label='Full Name', required=True)
+  mobile = forms.CharField(max_length=10, label='Mobile', required=True)
 
-#   class Meta:
-#     model = get_user_model()
-#     fields = ('email', 'username', 'full_name', 'mobile')
+  class Meta:
+    model = get_user_model()
+    fields = ('email', 'username', 'full_name', 'mobile')
 
-#   def save(self, commit=True):
-#     user = super(CustomUserChangeForm, self).save(commit=False)
-#     user.full_name = self.cleaned_data.get('full_name', '')
-#     user.mobile = self.cleaned_data.get('mobile', '')
+  def save(self, commit=True):
+    user = super().save(commit=False)
+    user.full_name = self.cleaned_data.get('full_name', '')
+    user.mobile = self.cleaned_data.get('mobile', '')
     
-#     if commit:
-#       user.save()
-#     return user
+    if commit:
+      user.save()
+    return user
     
 
 # for adding custom fields in signup form using allauth

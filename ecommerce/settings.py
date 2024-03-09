@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     
     'allauth',
     'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -121,6 +123,39 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+# social account django allauth
+# https://medium.com/powered-by-django/add-social-authentication-django-allauth-google-oauth-example-d8d69a603356
+SOCIALACCOUNT_PROVIDERS = {
+    'google':{
+        'APP': {
+            'client_id': '103688704365-aajhfm7bf6kh0d6tqn6np0ghron2esk2.apps.googleusercontent.com',
+            'secret': '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',
+            'key': ''
+        },
+        'SCOPE': [
+            'profile',
+            'email',
+        ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        }
+    },
+    # 'facebook': {
+    #     'SCOPE': [
+    #         'email',
+    #         'public_profile'
+    #     ],
+    #     'AUTH_PARAMS': {
+    #         'auth_type': 'reauthenticate'
+    #     },
+    #     'INIT_PARAMS': {
+    #         'cookie': True
+    #     },
+
+    # }
+}
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
@@ -152,9 +187,9 @@ LOGIN_REDIRECT_URL = 'home'
 
 ACCOUNT_LOGOUT_REDIRECT_URL = 'home'
 
-# django-allauth config
 SITE_ID = 3
 
+# django-allauth config
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'gyapu@ecommercesite.com'
 
@@ -163,7 +198,7 @@ ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_EMAIL_VERIFICATION = 'optional'
 
 
 # for adding custom fields in allauth signup form

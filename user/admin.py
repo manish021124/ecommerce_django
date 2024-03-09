@@ -1,14 +1,14 @@
 from django.contrib import admin
-# from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser, Profile
-# from .forms import CustomUserCreationForm, CustomUserChangeForm
+from .models import Profile
+from .forms import CustomUserCreationForm, CustomUserChangeForm
 
-# CustomUser = get_user_model()
+CustomUser = get_user_model()
 
 class CustomUserAdmin(UserAdmin):
-  # add_form = CustomUserCreationForm
-  # form = CustomUserChangeForm
+  add_form = CustomUserCreationForm
+  form = CustomUserChangeForm
   model = CustomUser
   list_display = ['email', 'full_name', 'mobile', 'get_groups', 'is_superuser', 'is_active',]
 
@@ -39,7 +39,7 @@ class CustomUserAdmin(UserAdmin):
       ),
     }),
   )
-  
+
 
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(Profile)
