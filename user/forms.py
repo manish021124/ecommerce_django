@@ -1,5 +1,5 @@
 from django import forms
-from .models import CustomUser, Profile
+from .models import CustomUser, Profile, Address
 from allauth.account.forms import SignupForm
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
@@ -72,11 +72,6 @@ class StoreSignupForm(BaseSignupForm):
   pass
 
 
-# class CustomLoginForm(LoginForm):
-#   def get_user(self):
-#     return self.user_cache
-
-
 class ProfileForm(forms.ModelForm):
   username = forms.CharField(max_length=255)
   email = forms.EmailField()
@@ -107,3 +102,23 @@ class ProfileForm(forms.ModelForm):
         profile.save()
         user.save()
     return profile
+
+
+class BaseAddressForm(forms.ModelForm):
+  class Meta:
+    model = Address
+    fields = ['province', 'city', 'area', 'tole']
+  
+  def save(self, commit=True):
+    address = super().save(commit=commit)
+    return address
+
+
+class AddressAddForm(BaseAddressForm):
+  pass
+
+
+class AddressUpdateForm(BaseAddressForm):
+  pass
+
+  

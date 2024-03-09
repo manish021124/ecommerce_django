@@ -4,6 +4,7 @@ from django.db import models
 from django.conf import settings 
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.core.validators import MinValueValidator
 
 class CustomUser(AbstractUser):
   id = models.UUIDField(
@@ -73,3 +74,28 @@ class Profile(models.Model):
 
   def __str__(self):
     return self.user.username + "'s Profile"
+
+
+class Address(models.Model):
+  PROVINCE_CHOICES = (
+    ('Province 1', 'Koshi Province'),
+    ('Province 2', 'Madesh Province'),
+    ('Province 3', 'Bagmati Province'),
+    ('Province 4', 'Gandaki Province'),
+    ('Province 5', 'Lumbini Province'),
+    ('Province 6', 'Karnali Province'),
+    ('Province 7', 'Sudurpashchim Province'),
+  )
+  id = models.UUIDField(
+    primary_key = True,
+    default = uuid.uuid4,
+    editable = False
+  )
+  user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, limit_choices_to={'groups__name': 'customer'})
+  province = models.CharField(max_length=100, choices=PROVINCE_CHOICES)
+  city = models.CharField(max_length=100)
+  area = models.CharField(max_length=100)
+  tole = models.IntegerField(validators=[MinValueValidator(0)])
+
+  def __str__(self):
+    return self.user.username + "'s Address"

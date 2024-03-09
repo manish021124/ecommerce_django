@@ -14,9 +14,17 @@ from .views import (
   CustomerProfileStoreView,
   CustomPasswordChangeView,
   UserDeleteView,
+  AddressListView,
+  AddressAddView,
+  AddressUpdateView,
+  AddressDeleteView,
 )
 
 urlpatterns = [
+  path('address/delete/<uuid:pk>/', AddressDeleteView.as_view(), name='address_delete'),
+  path('address/update/<uuid:pk>/', AddressUpdateView.as_view(), name='address_update'),
+  path('address/add/', AddressAddView.as_view(), name='address_add'),
+  path('address/', AddressListView.as_view(), name='address_list'),
   path('accounts/delete/<uuid:pk>/', UserDeleteView.as_view(), name='delete_account'),
   path('accounts/password/change/', CustomPasswordChangeView.as_view(), name='password_change'),
   path('profile/', ProfileDetailView.as_view(), name='profile_detail'),  

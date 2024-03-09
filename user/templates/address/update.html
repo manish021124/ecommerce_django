@@ -1,0 +1,25 @@
+{% extends "_base.html" %} 
+{% block title %} Update Address {% endblock title %}
+
+{% block content%}
+<div class="d-flex justify-content-between mb-5">
+  <h2>Update Address</h2>
+  <form method="post" action="{% url 'address_delete' address.id %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-link text-danger">Delete</button>
+  </form>
+</div>
+<div class="mb-3">
+  <form method="post">
+    {% csrf_token %} 
+    {% for field in form %}
+    <div class="mb-3">
+      <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+      {{ field }}
+    </div>
+    {% endfor %} 
+    <button type="submit" class="btn btn-warning mt-3">Update Address</button>
+  </form>
+</div>
+
+{% endblock content %}

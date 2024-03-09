@@ -1,10 +1,10 @@
 from django.urls import reverse_lazy
-from django.shortcuts import redirect, reverse, render
-from django.views.generic import TemplateView, DetailView, UpdateView, FormView, ListView, DeleteView
+from django.shortcuts import redirect, reverse, render, get_object_or_404
+from django.views.generic import TemplateView, DetailView, UpdateView, FormView, ListView, DeleteView, CreateView, View
 from allauth.account.views import SignupView, LoginView, PasswordChangeView
-from .forms import CustomerSignupForm, StoreSignupForm, ProfileForm
+from .forms import CustomerSignupForm, StoreSignupForm, ProfileForm, AddressAddForm, AddressUpdateForm
 from django.contrib import messages
-from .models import Profile, CustomUser
+from .models import Profile, CustomUser, Address
 from products.models import Product, Category
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -13,7 +13,7 @@ from random import sample
 from django.db.models import Q
 from django.conf import settings
 from allauth.account.forms import ChangePasswordForm
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 
 # permissions
 class CustomerGroupRequiredMixin(UserPassesTestMixin):
@@ -364,3 +364,70 @@ class UserDeleteView(LoginRequiredMixin, DeleteView):
     except Exception as e:
       messages.error(request, f'An error occured while deleting your account: {str(e)}')
       return HttpResponseRedirect(self.request.path_info)
+
+
+class AddressListView(LoginRequiredMixin, CustomerGroupRequiredMixin, ListView):
+  model = Address
+  template_name = 'address/list.html'
+  context_object_name = 'address_list'
+
+  def get_queryset(self):
+    user = self.request.user
+    return Address.objects.filter(user=user)
+
+
+class AddressAddView(LoginRequiredMixin, CustomerGroupRequiredMixin, CreateView):
+  model = Address 
+  form_class = AddressAddForm
+  template_name = 'address/add.html'
+  success_url = reverse_lazy('address_list')
+
+  def form_valid(self, form):
+    form.instance.user = self.request.user
+    messages.success(self.request, 'Address added successfully!')
+    return super().form_valid(form)
+
+  def form_invalid(self, form):
+    for field, errors in form.errors.items():
+      for error in errors:
+        messages.error(self.request, f"{field}: {error}")
+    return super().form_invalid(form)
+
+
+class AddressUpdateView(LoginRequiredMixin, CustomerGroupRequiredMixin, UpdateView):
+  model = Address 
+  form_class = AddressUpdateForm
+  template_name = 'address/update.html'
+  success_url = reverse_lazy('address_list')
+
+  def dispatch(self, request, *args, **kwargs):
+    self.object = self.get_object()
+
+    if self.object.user != request.user:
+      messages.error(request, "You are not authorized to update this product.")
+      return HttpResponseRedirect(success_url)
+    return super().dispatch(request, *args, **kwargs)
+
+  def form_valid(self, form):
+    messages.success(self.request, "Address updated successfully!")
+    return super().form_valid(form)
+
+  def form_invalid(self, form):
+    for field, errors in form.errors.items():
+      for error in errors:
+        messages.error(self.request, f"{field}: {error}")
+    return super().form_invalid(form)
+
+
+class AddressDeleteView(LoginRequiredMixin, CustomerGroupRequiredMixin, View):
+  model = Address
+  success_url = reverse_lazy('address_list')
+
+  def post(self, request, pk):
+    try:
+      address = get_object_or_404(Address, pk=pk)
+      address.delete()
+      messages.success(request, f"Your address was deleted successfully.")
+    except Exception as e:
+      messages.error(request, f"An error occurred while deleting address: {str(e)}")
+    return redirect(self.success_url)

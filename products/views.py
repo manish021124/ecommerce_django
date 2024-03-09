@@ -73,6 +73,7 @@ class ProductUpdateView(LoginRequiredMixin, StoreGroupRequiredMixin, UpdateView)
   def get_success_url(self):
     return reverse_lazy('product_detail', kwargs={'pk': self.object.pk})
 
+  # UpdateView does it so not needed
   def get_object(self, queryset=None):
     try:
       return Product.objects.get(pk=self.kwargs['pk'])
@@ -145,12 +146,11 @@ class ProductDeleteView(LoginRequiredMixin, StoreGroupRequiredMixin, DeleteView)
   def delete(self, request, *args, **kwargs):
     self.object = self.get_object()
     try:
-      self.object.is_deleted = True
-      self.object.save()
+      self.object.delete() # call delete() of product model
       messages.success(request, "Product deleted successfully.")
     except Exception as e:
       messages.error(request, f"An error occured while deleting the product: {str(e)}")
-    return HttpResponseRedirect(self.get_success_url())
+    return HttpResponseRedirect(success_url)
 
 
 class ProductByCategoryView(TemplateView):

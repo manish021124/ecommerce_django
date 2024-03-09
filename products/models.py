@@ -46,7 +46,7 @@ class Product(models.Model):
   discount_percentage = models.PositiveSmallIntegerField(default=0, validators=[MaxValueValidator(100)])
   stock = models.IntegerField(default=0, validators=[MinValueValidator(0)])
   category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='products')
-  store = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'groups__name': 'store'}, default='')
+  store = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'groups__name': 'store'})
   is_deleted = models.BooleanField(default=False) #soft deletion flag
 
   def __str__(self):

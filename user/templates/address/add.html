@@ -1,0 +1,19 @@
+{% extends "_base.html" %} 
+{% block title %} Add Address {% endblock title %}
+
+{% block content%}
+<h2 class="mb-5">Add Address</h2>
+<div class="mb-3">
+  <form method="post">
+    {% csrf_token %} 
+    {% for field in form %}
+    <div class="mb-3">
+      <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+      {{ field }}
+    </div>
+    {% endfor %} 
+    <button type="submit" class="btn btn-warning mt-3">Add Address</button>
+  </form>
+</div>
+
+{% endblock content %}

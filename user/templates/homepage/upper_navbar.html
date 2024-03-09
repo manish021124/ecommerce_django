@@ -58,11 +58,13 @@
             <li class="nav-item">
               <a href="{% url 'order_list' %}">Orders</a>
             </li>
-            {% if user_belong_to_store %}
-              <li class="nav-item">
+            <li class="nav-item">
+              {% if user_belong_to_store %}
                 <a class="nav-link py-0" href="{% url 'product_add' %}">Add Product</a>
-              </li>
-            {% endif %}              
+              {% else %}
+                <a class="nav-link py-0" href="{% url 'address_list' %}">Address</a>
+              {% endif %} 
+            </li>             
             <li class="nav-item">
               <a href="{% url 'account_logout' %}">Log Out</a>
             </li>
