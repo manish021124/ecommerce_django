@@ -14,6 +14,8 @@ from django.db.models import Q, Count
 from django.conf import settings
 from allauth.account.forms import ChangePasswordForm
 from django.http import HttpResponseRedirect, Http404
+from django.dispatch import receiver
+from allauth.account.signals import user_signed_up
 
 # permissions
 class CustomerGroupRequiredMixin(UserPassesTestMixin):
@@ -40,6 +42,17 @@ class CustomerGroupAndGuestRequiredMixin(UserPassesTestMixin):
         return redirect('home')
       else:
         return redirect('register')
+
+# add user singing up using google to customer group
+@receiver(user_signed_up)
+def add_to_customer_group(sender, request, user, **kwargs):
+  if user.socialaccount_set.filter(provider='google').exists():
+    try:
+      customer_group, created = Group.objects.get_or_create(name='customer')
+      user.groups.add(customer_group)
+      
+    except Exception as e:
+      print(f"Error adding user to group: {e}")
 
 
 class HomePageView(CustomerGroupAndGuestRequiredMixin, ListView):
