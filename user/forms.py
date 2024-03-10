@@ -121,4 +121,9 @@ class AddressAddForm(BaseAddressForm):
 class AddressUpdateForm(BaseAddressForm):
   pass
 
-  
+
+# for adding address while placing order
+class AddressRadioForm(forms.ModelForm):
+  class Meta:
+    model = Address
+    fields = ['province', 'city', 'area', 'tole']

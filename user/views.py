@@ -10,7 +10,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import Group
 from random import sample
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.conf import settings
 from allauth.account.forms import ChangePasswordForm
 from django.http import HttpResponseRedirect, Http404
@@ -385,6 +385,11 @@ class AddressAddView(LoginRequiredMixin, CustomerGroupRequiredMixin, CreateView)
   def form_valid(self, form):
     form.instance.user = self.request.user
     messages.success(self.request, 'Address added successfully!')
+    # check if the source page parameter is present in the request
+    source = self.request.GET.get('source')
+    if source == 'checkout':
+      form.save()
+      return redirect(reverse('checkout'))
     return super().form_valid(form)
 
   def form_invalid(self, form):
@@ -408,6 +413,12 @@ class AddressUpdateView(LoginRequiredMixin, CustomerGroupRequiredMixin, UpdateVi
       return HttpResponseRedirect(success_url)
     return super().dispatch(request, *args, **kwargs)
 
+  def get(self, request, *args, **kwargs):
+    address = self.get_object()
+    order_count = address.order_set.count()
+    has_orders = order_count > 0
+    return render(request, self.template_name, {'form': self.get_form(), 'has_orders': has_orders, 'address': address})
+
   def form_valid(self, form):
     messages.success(self.request, "Address updated successfully!")
     return super().form_valid(form)
@@ -426,8 +437,16 @@ class AddressDeleteView(LoginRequiredMixin, CustomerGroupRequiredMixin, View):
   def post(self, request, pk):
     try:
       address = get_object_or_404(Address, pk=pk)
-      address.delete()
-      messages.success(request, f"Your address was deleted successfully.")
+      # check if the address is associated with any order
+      order_count = address.order_set.count()
+      has_orders = order_count > 0
+      if has_orders:
+        messages.error(request, "This address is associated with orders and cannot be deleted.")
+      else:
+        address.delete()
+        messages.success(request, f"Your address was deleted successfully.")
     except Exception as e:
       messages.error(request, f"An error occurred while deleting address: {str(e)}")
     return redirect(self.success_url)
+
+  

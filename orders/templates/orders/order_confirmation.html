@@ -2,15 +2,38 @@
 {% block title %} Confirm Order {% endblock title %}
 
 {% block content%}
-<h2>Order Confirmation</h2>
+<h2 class="mb-5">Order Confirmation</h2>
 <div class="mb-3">
-  <p>Are you sure you want to place order?</p>
-  <div class="d-flex">
-    <form method="post">
-      {% csrf_token %}
-      <button type="submit" name="confirm_order" class="btn btn-sm btn-warning">Place Order</button>
-    </form>
-    <a href="{% url 'cart_detail' %}" class="ms-3 mt-2">No, Go Back to Order List</a>
-  </div>
+  <form method="post">
+    {% csrf_token %}
+    <div class="mb-5">
+      <h4>Shipping Address</h4>
+        {% if addresses %}
+          <table class="table">
+            {% for address in addresses %}
+              <tr>
+                <td>
+                  <label>
+                    <input type="radio" name="selected_address" value="{{ address.id }}" {% if forloop.first %}checked{% endif %}>
+                    {{address.user.full_name }}--> {{ address.province }}, {{ address.city }}-{{ address.tole }}, {{ address.area }}
+                  </label>
+                </td>
+              </tr>
+            {% endfor %}
+          </table>
+        {% else %}
+          <h6 class="text-danger">No shipping address. Please add shipping address to continue.</h6>
+        {% endif %}
+    </div>
+
+    <div class="d-flex">
+      {% if addresses %}
+        <button type="submit" name="confirm_order" class="btn btn-sm btn-warning">Place Order</button>
+      {% else %}
+        <a href="{% url 'address_add' %}?source=checkout"><button class="btn btn-sm btn-warning">Add Address</button></a>
+      {% endif %}
+      <a href="{% url 'cart_detail' %}" class="ms-3 mt-2">No, Go Back to Order List</a>
+    </div>
+  </form>
 </div>
 {% endblock content %}

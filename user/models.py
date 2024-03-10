@@ -78,13 +78,13 @@ class Profile(models.Model):
 
 class Address(models.Model):
   PROVINCE_CHOICES = (
-    ('Province 1', 'Koshi Province'),
-    ('Province 2', 'Madesh Province'),
-    ('Province 3', 'Bagmati Province'),
-    ('Province 4', 'Gandaki Province'),
-    ('Province 5', 'Lumbini Province'),
-    ('Province 6', 'Karnali Province'),
-    ('Province 7', 'Sudurpashchim Province'),
+    ('Koshi Province', 'Koshi Province'),
+    ('Madesh Province', 'Madesh Province'),
+    ('Bagmati Province', 'Bagmati Province'),
+    ('Gandaki Province', 'Gandaki Province'),
+    ('Lumbini Province', 'Lumbini Province'),
+    ('Karnali Province', 'Karnali Province'),
+    ('Sudurpashchim Province', 'Sudurpashchim Province'),
   )
   id = models.UUIDField(
     primary_key = True,

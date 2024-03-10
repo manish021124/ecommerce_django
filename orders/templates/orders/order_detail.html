@@ -7,6 +7,7 @@
   <p><strong>Order Number:</strong> {{ order.order_number }} </p>
   <p><strong>Date Ordered:</strong> {{ order.date_ordered }}</p>
   <p><strong>Status:</strong> {{ order.status }}</p>
+  <p><strong>Shipping Address:</strong> {{ order.shipping_address.province }}, {{ order.shipping_address.city }}-{{ order.shipping_address.tole }}, {{ order.shipping_address.area }}</p>
   {% if user_belong_to_store %}
   <p><strong>Ordered By:</strong><a href="{% url 'customer_profile_for_store' pk=order.user.id %}">{{ order.user }}</a></p>
   {% endif %}

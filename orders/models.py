@@ -7,6 +7,7 @@ from django.utils.timezone import now
 from django.utils.crypto import get_random_string
 from django.db.models import F, Sum, ExpressionWrapper, DecimalField
 from django.core.validators import MaxValueValidator
+from user.models import Address
 
 User = get_user_model()
 
@@ -30,6 +31,7 @@ class Order(models.Model):
   status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
   total_amount = models.DecimalField(max_digits=10, decimal_places=2)
   order_number = models.CharField(max_length=20, unique=True, editable=False)
+  shipping_address = models.ForeignKey(Address, on_delete=models.DO_NOTHING, null=True, blank=True, default=None)
 
   def __str__(self):
     return f"Order #{self.order_number} - {self.user.username}"

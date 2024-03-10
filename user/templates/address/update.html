@@ -4,10 +4,12 @@
 {% block content%}
 <div class="d-flex justify-content-between mb-5">
   <h2>Update Address</h2>
-  <form method="post" action="{% url 'address_delete' address.id %}">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-link text-danger">Delete</button>
-  </form>
+  {% if not has_orders %}
+    <form method="post" action="{% url 'address_delete' address.id %}">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-link text-danger">Delete</button>
+    </form>
+  {% endif %}
 </div>
 <div class="mb-3">
   <form method="post">
