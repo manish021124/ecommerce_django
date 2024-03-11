@@ -26,6 +26,16 @@
         {% endif %}
     </div>
 
+    <div class="mb-5">
+      <h4>Payment Method</h4>
+      {% for field in payment_form %}
+      <div class="mb-3">
+        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+        {{ field }}
+      </div>
+      {% endfor %}
+    </div>
+
     <div class="d-flex">
       {% if addresses %}
         <button type="submit" name="confirm_order" class="btn btn-sm btn-warning">Place Order</button>

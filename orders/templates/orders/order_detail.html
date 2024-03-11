@@ -8,6 +8,25 @@
   <p><strong>Date Ordered:</strong> {{ order.date_ordered }}</p>
   <p><strong>Status:</strong> {{ order.status }}</p>
   <p><strong>Shipping Address:</strong> {{ order.shipping_address.province }}, {{ order.shipping_address.city }}-{{ order.shipping_address.tole }}, {{ order.shipping_address.area }}</p>
+  <p><strong>Payment Method:</strong> {{ order.payment_method }}</p>
+  <p>
+    <strong>Payment:</strong>
+    {% if order.status == 'Cancelled' %}
+      {% if order.payment_method == 'Esewa' and order.payment_completed  %}
+        Refunded
+      {% else %}
+        -
+      {% endif %}
+    {% elif order.payment_completed or order.status == 'Delivered' %}
+      Completed
+    {% else %}
+      {% if order.payment_method == 'Esewa' and not order.payment_completed%}
+        <a href="{% url 'esewa_request' order.id %}">Pay Now</a>
+      {% else %}
+        Pending
+      {% endif %}
+    {% endif %}
+  </p>
   {% if user_belong_to_store %}
   <p><strong>Ordered By:</strong><a href="{% url 'customer_profile_for_store' pk=order.user.id %}">{{ order.user }}</a></p>
   {% endif %}

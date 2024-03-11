@@ -1,0 +1,62 @@
+{% extends "_base.html" %}
+
+{% block title %}Esewa Pay{% endblock title %}
+
+{% block link %}
+<style>
+  form {
+    display: none;
+  }
+</style>
+{% endblock link %}
+
+{% block content %}
+  <form action="https://rc-epay.esewa.com.np/api/epay/main/v2/form" method="POST">
+    <input type="text" id="amount" name="amount" value="{{ order.total_amount }}" required>
+    <input type="text" id="tax_amount" name="tax_amount" value ="0" required>
+    <input type="text" id="total_amount" name="total_amount" value="{{ order.total_amount }}" required>
+    <input type="text" id="transaction_uuid" name="transaction_uuid" value="{{ order.id }}" required>
+    <input type="text" id="product_code" name="product_code" value ="EPAYTEST" required>
+    <input type="text" id="product_service_charge" name="product_service_charge" value="0" required>
+    <input type="text" id="product_delivery_charge" name="product_delivery_charge" value="0" required>
+    <input type="text" id="success_url" name="success_url" value="http://127.0.0.1:8000/orders/esewa-pay/verify" required>
+    <input type="text" id="failure_url" name="failure_url" value="http://127.0.0.1:8000/orders/esewa-pay/{{ order.id }}/failed/" required>
+    <input type="text" id="signed_field_names" name="signed_field_names" value="total_amount,transaction_uuid,product_code" required>
+    <input type="text" id="signature" name="signature" required>
+    <input value="Submit" type="submit" id="submitButton">
+  </form>
+
+  <h1>You are being redirected to esewa. Please wait...</h1>
+{% endblock content %}
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1
+/crypto-js.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1
+/hmac-sha256.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1
+/enc-base64.min.js"></script>
+<script>
+  window.onload = function() {
+    calculateSignatureAndSubmit();
+  }
+  function calculateSignatureAndSubmit() {
+    const totalAmt = document.getElementById("total_amount").value;
+    const transactionUuid = document.getElementById("transaction_uuid").value;
+    const productCode = document.getElementById("product_code").value;
+    const message = `total_amount=${totalAmt},transaction_uuid=${transactionUuid},product_code=${productCode}`;
+    const merchantKey = "8gBm/:&EnhH.1/q";
+
+    let hash = CryptoJS.HmacSHA256(message, merchantKey);
+    let hashINBase64 = CryptoJS.enc.Base64.stringify(hash);
+    console.log(hashINBase64);
+    const signatureElement = document.getElementById("signature");
+    signatureElement.value = hashINBase64;
+
+    document.getElementById("submitButton").click();
+  }
+</script>
+{% endblock scripts %}
+
+
+{% comment %} from esewa document: https://developer.esewa.com.np/pages/Epay-V2#transactionflow {% endcomment %}

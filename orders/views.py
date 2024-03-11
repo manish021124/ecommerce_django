@@ -11,6 +11,10 @@ from django.contrib.auth.models import Group
 from django.db.models import Sum, F, ExpressionWrapper, DecimalField
 from user.forms import AddressRadioForm
 from user.models import Address
+from .forms import PaymentMethodAddForm
+from django.http import HttpResponseRedirect
+import json
+import base64
 
 class OrderListView(LoginRequiredMixin, ListView):
   model = Order
@@ -83,19 +87,22 @@ class CheckOutView(LoginRequiredMixin, CustomerGroupRequiredMixin, View):
   def get(self, request, *args, **kwargs):
     # retrieve addresses belonging to the current user
     addresses = request.user.address_set.all()
-    return render(request, self.template_name, {'addresses': addresses, 'address_form': AddressRadioForm()})
+    return render(request, self.template_name, {'addresses': addresses, 'address_form': AddressRadioForm(), 'payment_form': PaymentMethodAddForm()})
   
   def post(self, request, *args, **kwargs):
     try:
       if 'confirm_order' in request.POST:        
         address_id = request.POST.get('selected_address')
-        if address_id:
+        payment_form = PaymentMethodAddForm(request.POST)
+        if address_id and payment_form.is_valid():
           order = Order.objects.create(user=request.user)
+          payment_method = payment_form.cleaned_data['payment_method']
 
           total_amount = order.calculate_total_amount()
           order.total_amount = total_amount
           address = Address.objects.get(pk=address_id)
           order.shipping_address = address
+          order.payment_method = payment_method
           order.save()
 
           cart_items = request.user.cart.items.all()
@@ -112,7 +119,10 @@ class CheckOutView(LoginRequiredMixin, CustomerGroupRequiredMixin, View):
           # delete the cart
           request.user.cart.delete()
           messages.success(request, 'Order added successfully.')
-          return redirect('/orders/')
+          if payment_method == 'Esewa':
+            return redirect('esewa_request', pk=order.id)
+          else:
+            return redirect('/orders/')
         else:
           messages.error(request, 'Please select a shipping address.')
           return redirect('checkout')
@@ -141,3 +151,37 @@ class OrderCancelView(LoginRequiredMixin, View):
     else:
       messages.error(request, f'Order {order.order_number} cannot be cancelled.')
     return redirect('/orders/')
+
+
+class EsewaRequestView(View):
+  template_name = 'esewa/request.html'
+
+  def get(self, request, *args, **kwargs):
+    order_id = kwargs.get('pk')
+    order = get_object_or_404(Order, pk=order_id)
+    context = {
+      'order': order,
+    }
+    return render(request, self.template_name, context)
+
+
+class EsewaVerificationView(View):
+  def get(self, request, *args, **kwargs):
+    data_value = request.GET.get('data') # encrypted data from url
+    decoded_data = base64.b64decode(data_value).decode('utf-8')
+    map_data = json.loads(decoded_data) # convert into dictionary
+    order_id = map_data.get('transaction_uuid') # get order id which is stored in transaction_uuid
+    status = map_data.get('status')
+    order = get_object_or_404(Order, pk=order_id)
+    if status == "COMPLETE":
+      order.payment_completed = True
+      order.save()
+        
+    return redirect('/orders/')
+
+
+class EsewaErrorView(View):
+  template_name = 'esewa/error.html'
+
+  def get(self, request, *args, **kwargs):
+    return render(request, self.template_name)

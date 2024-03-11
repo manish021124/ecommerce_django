@@ -8,6 +8,8 @@
         <th>Date</th>
         <th>Shipping Address</th>
         <th>Total Amount</th>
+        <th>Payment Method</th>
+        <th>Payment</th>
         <th></th>
       </tr>
     </thead>
@@ -18,6 +20,24 @@
           <td>{{ order.date_ordered }}</td>
           <td>{{ order.shipping_address.province }}, {{ order.shipping_address.city }}-{{ order.shipping_address.tole }}, {{ order.shipping_address.area }}</td>
           <td>{{ order.total_amount_override }}</td>
+          <td>{{ order.payment_method }}</td>
+          <td>
+            {% if order.status == 'Cancelled' %}
+              {% if order.payment_method == 'Esewa' and order.payment_completed  %}
+                Refunded
+              {% else %}
+                -
+              {% endif %}
+            {% elif order.payment_completed or order.status == 'Delivered' %}
+              Completed
+            {% else %}
+              {% if order.payment_method == 'Esewa' and not order.payment_completed%}
+                <a href="{% url 'esewa_request' order.id %}">Pay Now</a>
+              {% else %}
+                Pending
+              {% endif %}
+            {% endif %}
+          </td>
           {% if order.status == 'Pending' or order.status == 'Processing' %}
             <td><a href="{% url 'order_cancel' pk=order.pk %}" class="btn btn-sm btn-danger">Cancel Order</a></td>
           {% else %}
@@ -26,7 +46,7 @@
         </tr>
       {% empty %}
         <tr>
-          <td colspan="5">No orders found.</td>
+          <td colspan="7">No orders found.</td>
         </tr>
       {% endfor %}
     </tbody>

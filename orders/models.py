@@ -21,6 +21,11 @@ class Order(models.Model):
     ('Cancelled', 'Cancelled'),
   )
 
+  PAYMENT_METHODS = (
+    ('Cash on Delivery', 'Cash on Delivery'),
+    ('Esewa', 'Esewa'),
+  )
+
   id = models.UUIDField(
     primary_key = True,
     default = uuid.uuid4,
@@ -32,6 +37,8 @@ class Order(models.Model):
   total_amount = models.DecimalField(max_digits=10, decimal_places=2)
   order_number = models.CharField(max_length=20, unique=True, editable=False)
   shipping_address = models.ForeignKey(Address, on_delete=models.DO_NOTHING, null=True, blank=True, default=None)
+  payment_method = models.CharField(max_length=50, choices=PAYMENT_METHODS, default='Cash on Delivery')
+  payment_completed = models.BooleanField(default=False, null=True, blank=True)
 
   def __str__(self):
     return f"Order #{self.order_number} - {self.user.username}"
