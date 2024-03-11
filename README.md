@@ -7,33 +7,51 @@ Welcome to our Django Ecommerce Site! This README document will guide you throug
 
 To install and run our Django Ecommerce Site, follow these steps:
 
-1. Clone the repository to your local machine.
+1. Clone the repository to your local machine.  
+```
 git clone https://github.com/manish021124/ecommerce_django.git
+```
 
-2. Navigate to the project directory:
-cd django_ecommerce_site
+2. Navigate to the project directory:  
+```
+*cd django_ecommerce_site*
+```
 
-3. Create a virtual environment:
+3. Create a virtual environment:  
+```
 python -m venv venv
+```
 
-4. Activate the virtual environment:
--**On Windows:**
+4. Activate the virtual environment:  
+- **On Windows:**  
+```
 venv\Scripts\activate
+```
 
--**On macOS and Linux:**
+- **On macOS and Linux:**  
+```
 source venv/bin/activate
+```
 
-5. Install dependencies
+5. Install dependencies  
+```
 pip install -r requirements.txt
+```
 
-6. Perform database migrations
+6. Perform database migrations  
+```
 python manage.py migrate
+```
 
-7. Create a superuser (admin account) for the Django admin interface:
+7. Create a superuser (admin account) for the Django admin interface:  
+```
 python manage.py createsuperuser
+```
 
-8. Start the development server:
+8. Start the development server:  
+```
 python manage.py runserver
+```
 
 9. Open your web browser and navigte to 'http://localhost:8000' to access the site.
 
