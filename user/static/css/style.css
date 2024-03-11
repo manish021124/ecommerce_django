@@ -43,6 +43,11 @@
 }
 
 /* ******************************************* */
+body {
+  color: var(--textColor);
+  background-color: var(--backgroundColor);
+}
+
 
 .bottom-nav{
   background-color: var(--backgroundColor);

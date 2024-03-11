@@ -5,7 +5,7 @@
 {% block content %}
   <div class="d-flex justify-content-between mb-5">
     <h2>Address Book</h2>
-    <a href="{% url 'address_add' %}" class="text-black link-underline link-underline-opacity-0"><strong>+ Add</strong></a>
+    <a href="{% url 'address_add' %}" class="text-danger link-underline link-underline-opacity-0"><strong>+ Add</strong></a>
   </div>
   {% if address_list %}
     <table class="table">

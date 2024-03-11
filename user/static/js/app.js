@@ -2,7 +2,6 @@ const toggleSwitch = document.getElementById("toggleswitch");
 const gyapuHead = document.getElementById("gyapu-head");
 
 window.onscroll = function () { scrollShowNavbar() };
-toggleSwitch.addEventListener('change', nightMode);
 
 function scrollShowNavbar() {
   const nav = document.getElementById("secondNav");
@@ -18,10 +17,16 @@ function scrollShowNavbar() {
 
 function nightMode(){
   document.body.classList.toggle("nightmode");
-  if(document.body.classList == "nightmode")
+  if(document.body.classList.contains("nightmode")) {
     gyapuHead.src = "/static/images/gyapu-header-nightmode.svg";
-  else{
+    toggleSwitch.style.backgroundImage = 'url("/static/images/moon.svg")';
+    // store night mode state in local storage 
+    localStorage.setItem("nightModeEnabled", "true");
+  } else{
     gyapuHead.src = "/static/images/gyapu-header-lightmode.svg";
+    toggleSwitch.style.backgroundImage = 'url("/static/images/sun.svg")';
+    // remove night mode state from local storage 
+    localStorage.removeItem("nightModeEnabled");
   }
 }
 
@@ -65,6 +70,18 @@ document.addEventListener('DOMContentLoaded', function() {
     .catch(error => {
       console.error('Error fetching cart count:', error);
     });
+
+    toggleSwitch.addEventListener('change', function() {
+      nightMode();
+    });
+
+    // check local storage on page load
+    let nightModeEnabled = localStorage.getItem("nightModeEnabled");
+    if (nightModeEnabled === "true") {
+      document.body.classList.add("nightmode");
+      gyapuHead.src = "/static/images/gyapu-header-nightmode.svg";
+      toggleSwitch.style.backgroundImage = 'url("/static/images/moon.svg")';
+    }
 });
 
 // can be done as in product update form

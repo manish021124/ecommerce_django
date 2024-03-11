@@ -30,12 +30,10 @@
               {% endif %}
             {% elif order.payment_completed or order.status == 'Delivered' %}
               Completed
+            {% elif order.payment_method == 'Esewa' and not order.payment_completed %}
+              <a href="{% url 'esewa_request' order.id %}">Pay Now</a>
             {% else %}
-              {% if order.payment_method == 'Esewa' and not order.payment_completed%}
-                <a href="{% url 'esewa_request' order.id %}">Pay Now</a>
-              {% else %}
-                Pending
-              {% endif %}
+              Pending
             {% endif %}
           </td>
           {% if order.status == 'Pending' or order.status == 'Processing' %}
