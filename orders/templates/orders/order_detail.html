@@ -26,7 +26,7 @@
     {% endif %}
   </p>
   {% if user_belong_to_store %}
-  <p><strong>Ordered By:</strong><a href="{% url 'customer_profile_for_store' pk=order.user.id %}">{{ order.user }}</a></p>
+  <p><strong>Ordered By:</strong> <a href="{% url 'customer_profile_for_store' pk=order.user.id %}">{{ order.user }}</a></p>
   {% endif %}
 
   <h2>Order Items</h2>

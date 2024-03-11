@@ -165,6 +165,10 @@ class ProductByCategoryView(TemplateView):
       stock__gt=0,
       is_deleted=False
     )
+
+    user = self.request.user
+    if user.groups.filter(name='store').exists():
+      queryset = queryset.filter(store=user)
     # get all products and suffle them
     products = list(queryset)
     shuffle(products)

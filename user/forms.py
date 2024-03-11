@@ -86,7 +86,6 @@ class ProfileForm(forms.ModelForm):
     super(ProfileForm, self).__init__(*args, **kwargs)
     if self.instance and self.instance.user:
       self.fields['username'].initial = self.instance.user.username
-      self.fields['email'].initial = self.instance.user.email
       self.fields['full_name'].initial = self.instance.user.full_name
       self.fields['mobile'].initial = self.instance.user.mobile
 
@@ -95,7 +94,6 @@ class ProfileForm(forms.ModelForm):
     if self.instance and self.instance.user:
       user = self.instance.user
       user.username = self.cleaned_data['username']
-      user.email = self.cleaned_data['email']
       user.full_name = self.cleaned_data['full_name']
       user.mobile = self.cleaned_data['mobile']
       if commit:
