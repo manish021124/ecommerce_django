@@ -11,7 +11,10 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
 
+from dotenv import load_dotenv
 from pathlib import Path
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -128,8 +131,8 @@ AUTH_PASSWORD_VALIDATORS = [
 SOCIALACCOUNT_PROVIDERS = {
     'google':{
         'APP': {
-            'client_id': '103688704365-aajhfm7bf6kh0d6tqn6np0ghron2esk2.apps.googleusercontent.com',
-            'secret': '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',
+            'client_id': os.getenv('GOOGLE_OAUTH2_CLIENT_ID'),
+            'secret': os.getenv('GOOGLE_OAUTH2_CLIENT_SECRET'),
             'key': ''
         },
         'SCOPE': [

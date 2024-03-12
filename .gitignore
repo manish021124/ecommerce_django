@@ -1,13 +1,19 @@
+# Ignore Python bytecode files
 __pycache__/
 *.py[cod]
 
+# Ignore virtual envrironment directories
 venv/
 env/
 
-/ecommerce/setting.py
+# Ignore Django settings file 
+/ecommerce/settings.py
 
+# Ignore Django static files directory
 /ecommerce/staticfiles/
 
+# Ignore Django media files directory
 /ecommerce/media/
 
+# Ignore SQLite database file 
 db.sqlite3
