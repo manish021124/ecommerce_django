@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+
+venv/
+env/
+
+/ecommerce/setting.py
+
+/ecommerce/staticfiles/
+
+/ecommerce/media/
+
+db.sqlite3
