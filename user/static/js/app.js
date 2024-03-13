@@ -1,5 +1,32 @@
-const toggleSwitch = document.getElementById("toggleswitch");
-const gyapuHead = document.getElementById("gyapu-head");
+// fetch the initial cart count 
+document.addEventListener('DOMContentLoaded', function() {
+  const cartCounts = document.querySelectorAll('.cart-number');
+  const toggleSwitch = document.getElementById("toggleswitch");
+  const gyapuHead = document.getElementById("gyapu-head");
+
+  fetch('/carts/get-cart-count/')
+    .then(response => response.json())
+    .then(data => {
+      cartCounts.forEach(cartCount => {
+        cartCount.textContent = data.cartCount;
+      });
+    })
+    .catch(error => {
+      console.error('Error fetching cart count:', error);
+    });
+
+    toggleSwitch.addEventListener('change', function() {
+      nightMode();
+    });
+
+    // check local storage on page load
+    let nightModeEnabled = localStorage.getItem("nightModeEnabled");
+    if (nightModeEnabled === "true") {
+      document.body.classList.add("nightmode");
+      gyapuHead.src = "/static/images/gyapu-header-nightmode.svg";
+      toggleSwitch.style.backgroundImage = 'url("/static/images/moon.svg")';
+    }
+});
 
 window.onscroll = function () { scrollShowNavbar() };
 
@@ -16,13 +43,16 @@ function scrollShowNavbar() {
 }
 
 function nightMode(){
+  const toggleSwitch = document.getElementById("toggleswitch");
+  const gyapuHead = document.getElementById("gyapu-head");
+  
   document.body.classList.toggle("nightmode");
   if(document.body.classList.contains("nightmode")) {
     gyapuHead.src = "/static/images/gyapu-header-nightmode.svg";
     toggleSwitch.style.backgroundImage = 'url("/static/images/moon.svg")';
     // store night mode state in local storage 
     localStorage.setItem("nightModeEnabled", "true");
-  } else{
+  } else {
     gyapuHead.src = "/static/images/gyapu-header-lightmode.svg";
     toggleSwitch.style.backgroundImage = 'url("/static/images/sun.svg")';
     // remove night mode state from local storage 
@@ -55,34 +85,6 @@ function decrementQuantity() {
     quantityInput.value = currentQuantity - 1;
   }
 }
-
-// fetch the initial cart count 
-document.addEventListener('DOMContentLoaded', function() {
-  const cartCounts = document.querySelectorAll('.cart-number');
-
-  fetch('/carts/get-cart-count/')
-    .then(response => response.json())
-    .then(data => {
-      cartCounts.forEach(cartCount => {
-        cartCount.textContent = data.cartCount;
-      });
-    })
-    .catch(error => {
-      console.error('Error fetching cart count:', error);
-    });
-
-    toggleSwitch.addEventListener('change', function() {
-      nightMode();
-    });
-
-    // check local storage on page load
-    let nightModeEnabled = localStorage.getItem("nightModeEnabled");
-    if (nightModeEnabled === "true") {
-      document.body.classList.add("nightmode");
-      gyapuHead.src = "/static/images/gyapu-header-nightmode.svg";
-      toggleSwitch.style.backgroundImage = 'url("/static/images/moon.svg")';
-    }
-});
 
 // can be done as in product update form
 // allow user to add product image one by one
