@@ -35,15 +35,19 @@
       </div>
       {% endfor %}
     </div>
-
-    <div class="d-flex">
-      {% if addresses %}
+    {% if addresses %}
+      <div class="d-flex">
         <button type="submit" name="confirm_order" class="btn btn-sm btn-warning">Place Order</button>
-      {% else %}
-        <a href="{% url 'address_add' %}?source=checkout"><button class="btn btn-sm btn-warning">Add Address</button></a>
-      {% endif %}
+        <a href="{% url 'cart_detail' %}" class="ms-3 mt-2">No, Go Back to Order List</a>
+      </div>
+    {% endif %}
+  </form>
+  {% if not addresses %}
+    <div class="d-flex">
+      <a href="{% url 'address_add' %}?source=checkout"><button class="btn btn-sm btn-warning">Add Address</button></a>
       <a href="{% url 'cart_detail' %}" class="ms-3 mt-2">No, Go Back to Order List</a>
     </div>
-  </form>
+  {% endif %}
+  
 </div>
 {% endblock content %}
