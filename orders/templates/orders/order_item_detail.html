@@ -4,6 +4,7 @@
 
 {% block content %}
   <h1>Order Item Detail</h1>
+  <p><a href={% url 'review_add' order_item_id=order_item.id %}>Add Review</a></p>
   <p><strong>Product Name: </strong><a href="{% url 'product_detail' order_item.product.id %}"> {{ order_item.product }} </a></p>
   <p><strong>Quantity:</strong> {{ order_item.quantity }}</p>
   <p><strong>Price:</strong> {{ order_item.price }}</p>

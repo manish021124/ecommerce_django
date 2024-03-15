@@ -1,15 +1,16 @@
-from django.http import HttpResponseRedirect, Http404
-from django.shortcuts import render
+from django.http import HttpResponseRedirect, Http404, HttpResponseForbidden
+from django.shortcuts import render, redirect
 from django.views.generic import DetailView, CreateView, UpdateView, DeleteView, TemplateView, ListView
-from .models import Product, Category
-from .forms import ProductAddForm, ProductUpdateForm, ProductImageForm, ProductImageFormSet
+from .models import Product, Category, Review
+from .forms import ProductAddForm, ProductUpdateForm, ProductImageForm, ProductImageFormSet, ReviewForm
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
-from user.views import StoreGroupRequiredMixin
+from user.views import StoreGroupRequiredMixin, CustomerGroupRequiredMixin
 from django.shortcuts import get_object_or_404
 from random import shuffle
 from django.db.models import Q
+from orders.models import OrderItem
 
 class ProductDetailView(DetailView):
   model = Product
@@ -209,3 +210,38 @@ class SearchResultsView(ListView):
     return context
 
   
+class ReviewAddView(LoginRequiredMixin, CustomerGroupRequiredMixin, CreateView):
+  model = Review
+  form_class = ReviewForm
+  template_name = 'reviews/add.html'
+
+  def get(self, request, *args, **kwargs):
+    order_item_id = kwargs.get('order_item_id')
+    order_item = get_object_or_404(OrderItem, id=order_item_id)
+    if request.user != order_item.order.user:
+      messages.error(request, 'You are not authorized to add a review for this order item.')
+      return redirect('home')
+    return super().dispatch(request, *args, **kwargs)
+
+  def get_form_kwargs(self):
+    kwargs = super().get_form_kwargs()    
+    order_item_id = self.kwargs.get('order_item_id')
+    order_item = get_object_or_404(OrderItem, id=order_item_id)
+    kwargs['order_item'] = order_item
+    return kwargs
+
+  def form_valid(self, form):
+    form.instance.user = self.request.user
+    messages.success(self.request, 'Review added successfully!')
+    return super().form_valid(form)
+
+  def form_invalid(self, form):
+    error_messages = []
+    for fiedl, errors in form.errors.items():
+      for error in errors:
+        error_messages.append(f"{field}: {error}")
+    messages.error(self.request, "\n".join(error_messages))
+    return super().form_invalid(form)
+      
+  def get_success_url(self):
+    return reverse_lazy('product_detail', kwargs={'pk': self.object.order_item.product.id})

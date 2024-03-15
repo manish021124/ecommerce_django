@@ -1,5 +1,5 @@
 from django import forms 
-from .models import Product, ProductImage, Category
+from .models import Product, ProductImage, Category, Review
 from django.forms import inlineformset_factory
 
 class ProductImageForm(forms.ModelForm):
@@ -56,3 +56,18 @@ class ProductAddForm(ProductFormBase):
 
 class ProductUpdateForm(ProductFormBase):
   pass
+
+
+class ReviewForm(forms.ModelForm):
+  class Meta:
+    model = Review
+    fields = ['rating', 'review']
+
+  def __init__(self, order_item=None, *args, **kwargs):
+    super().__init__(*args, **kwargs)
+    self.order_item = order_item
+
+  def save(self, commit=True):
+    if self.order_item:
+      self.instance.order_item = self.order_item
+    return super().save(commit)

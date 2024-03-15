@@ -6,6 +6,7 @@ from .views import (
   ProductDeleteView, 
   ProductByCategoryView,
   SearchResultsView,
+  ReviewAddView,
 )
 from user.views import HomePageView
 
@@ -17,4 +18,5 @@ urlpatterns = [
   path('<uuid:pk>/delete', ProductDeleteView.as_view(), name='product_delete'),
   path('<str:category>', ProductByCategoryView.as_view(), name='product_by_category'),
   path('search/results/', SearchResultsView.as_view(), name='search_results'),
+  path('review/add/<uuid:order_item_id>/', ReviewAddView.as_view(), name='review_add'),
 ]

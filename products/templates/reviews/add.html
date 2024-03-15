@@ -1,0 +1,12 @@
+{% extends "_base.html" %}
+
+{% block title %}Add Review{% endblock title %}
+
+{% block content %}
+<h2>Add Review</h2>
+<form method="post">
+  {% csrf_token %}
+    {{ form.as_p }}
+  <button type="submit" class="btn btn-warning">Add Review</button>
+</form>
+{% endblock content %}

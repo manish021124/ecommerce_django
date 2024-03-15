@@ -83,4 +83,15 @@ class ProductImage(models.Model):
 
   def __str__(self):
     return f"Image for {self.product.name}"
+
+
+class Review(models.Model):
+  user = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'groups__name': 'customer'})
+  order_item = models.ForeignKey('orders.OrderItem', on_delete=models.CASCADE, limit_choices_to={'order__status': 'Delivered'}) # used order.OrderItem cause using OrderItem directly creates circular import
+  rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)])
+  review =  models.TextField()
+  created_at = models.DateTimeField(auto_now_add=True)
+
+  def __str__(self):
+    return f"Review for {self.order_item.product.name} of order {self.order_item.order.order_number} by {self.user.username}"
   
