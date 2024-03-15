@@ -1,6 +1,6 @@
 from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import render
-from django.views.generic import DetailView, CreateView, UpdateView, DeleteView, TemplateView
+from django.views.generic import DetailView, CreateView, UpdateView, DeleteView, TemplateView, ListView
 from .models import Product, Category
 from .forms import ProductAddForm, ProductUpdateForm, ProductImageForm, ProductImageFormSet
 from django.urls import reverse_lazy, reverse
@@ -183,4 +183,29 @@ class ProductByCategoryView(TemplateView):
         product.primary_image_url = None
 
     return context
+
+
+class SearchResultsView(ListView):
+  template_name = 'search_results.html'
+  context_object_name = 'results'
+
+  def get_queryset(self):
+    query = self.request.GET.get('query', '')
+    products = Product.objects.filter(
+        Q(name__icontains=query) |  # icontains is a lookup filter in django's orm system
+        Q(category__name__icontains=query),
+        is_deleted=False
+      )
+    if self.request.user.groups.filter(name='store').exists():
+      products = products.filter(store=self.request.user)
+    else:
+      products = products.filter(stock__gt=0)
+
+    return products
+
+  def get_context_data(self, **kwargs):
+    context = super().get_context_data(**kwargs)
+    context['query'] = self.request.GET.get('query', '')
+    return context
+
   

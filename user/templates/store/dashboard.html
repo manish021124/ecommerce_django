@@ -20,10 +20,11 @@
   {% endif %}
 
   {% if products %}
-  <div class="top-picks">
+  <div class="categories"> 
     {% with products as products %}
       {% with 'Products' as section_title %}
-        {% include 'products/product_box.html' %}
+        {% comment %} set is_categoryPage to true just to use it in product_box.html {% endcomment %}
+        {% include 'products/product_box.html' with is_categoryPage=True %}
       {% endwith %}
     {% endwith %}
   </div>

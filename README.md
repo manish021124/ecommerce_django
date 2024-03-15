@@ -90,10 +90,12 @@ You can use the following test credentials to log in to eSewa for testing purpos
 
 ## Usage
 
-### Our Django Ecommerce Site provides the following functionalites:
+Our Django Ecommerce Site provides the following functionalites:  
+
 - **User Authentication:** Users can sign up, log in and log out as both customer and store owners.
 - **Social Authentication:** Users can sign up, log in and log out as customer using Google authentication.
 - **Product Management:** Store owners can add, edit and delete products, managin their inventory efficiently.
+- **Product Search:** Users can search for products by entering search queries into the serach form.
 - **Shopping Cart:** Users can add products to their shopping cart, review their selections, and proceed to checkout seamlessly.
 - **Order Management:** Both store owners and customers can manage orders, view order details and easily cancel orders if necessary.
 - **Payment Gateway Integration:** Seamlessly integrate the popular payment gateway eSewa to facilitate secure online transactions.

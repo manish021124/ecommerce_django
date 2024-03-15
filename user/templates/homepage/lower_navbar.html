@@ -14,8 +14,9 @@
       ">
         <img class="img-fluid" id="gyapu-head" src="{% static "images/gyapu-header-lightmode.svg" %}" alt="gyapu brand logo">
       </a>
-      <form class="input-group mt-3 mb-3">
-        <input type="text" class="form-control" placeholder="I'm searching for...">
+      <form class="input-group mt-3 mb-3" method="get" action="{% url 'search_results' %}">
+        {% csrf_token %}
+        <input type="text" class="form-control" placeholder="I'm searching for..." name="query">
         <button class="btn btn-warning" type="submit">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search"
             viewBox="0 0 16 16">
