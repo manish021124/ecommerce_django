@@ -14,7 +14,7 @@ git clone https://github.com/manish021124/ecommerce_django.git
 
 2. Navigate to the project directory:  
 ```
-*cd django_ecommerce_site*
+cd ecommerce_django
 ```
 
 3. Create a virtual environment:  
