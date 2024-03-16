@@ -2,6 +2,18 @@
 
 {% block title %}{{ product.name }}{% endblock title %}
 
+{% block link %}
+<style>
+  :root{
+    --textColor: #707B8E;
+  }
+  
+  .nightmode{
+    --textColor: #BEC3CA;
+  }
+</style>
+{% endblock link %}
+
 {% block content %}
   {% if product.is_deleted %}
     <h1 class="text-danger">Product Unavailable</h1>
@@ -45,5 +57,32 @@
         </form>
       {% endif %}
     </div>
+
+    {% if reviews %}
+      <div class="mt-5">
+        <h2>Ratings/Reviews</h2>
+        <ul class="list-group" >
+          {% for review in reviews %}
+            <li class="list-group-item" style="color: var(--text-color);">
+              {% if user == review.user %}
+                <div>
+                  <a href="#">Edit</a>
+                  <a href="#" class="text-danger ms-1">Delete</a>
+                </div>
+              {% endif %}
+              <div>
+                <span>{{ review.rating }}</span>
+                <span> By {{ review.user.username }}</span>
+                <span class="float-end">{{ review.created_at }}</span>
+              </div>
+              <div>
+                <p>{{ review.review }}</p>
+              </div>
+            </li>
+            <hr>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
   {% endif %}
 {% endblock content %}

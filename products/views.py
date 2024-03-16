@@ -16,6 +16,13 @@ class ProductDetailView(DetailView):
   model = Product
   context_object_name = 'product'
   template_name = 'products\product_detail.html'
+
+  def get_context_data(self, **kwargs):
+    context = super().get_context_data(**kwargs)
+    product = self.get_object()
+    reviews = Review.objects.filter(order_item__product=product).order_by('-created_at') # '-' for descending order
+    context['reviews'] = reviews
+    return context
   
 
 class ProductCreateView(LoginRequiredMixin, StoreGroupRequiredMixin, CreateView):
@@ -215,7 +222,7 @@ class ReviewAddView(LoginRequiredMixin, CustomerGroupRequiredMixin, CreateView):
   form_class = ReviewForm
   template_name = 'reviews/add.html'
 
-  def get(self, request, *args, **kwargs):
+  def dispatch(self, request, *args, **kwargs):
     order_item_id = kwargs.get('order_item_id')
     order_item = get_object_or_404(OrderItem, id=order_item_id)
     if request.user != order_item.order.user:
