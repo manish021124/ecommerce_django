@@ -1,0 +1,16 @@
+{% extends "_base.html" %} 
+{% block title %} Delete Review {% endblock title %}
+
+{% block content%}
+<h2>Delete Review</h2>
+<div class="mb-3">
+  <p>Are you sure you want to delete your review for "{{ review.order_item.product.name }}"?</p>
+  <div class="d-flex">
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger">Confirm Delete</button>
+    </form>
+    <a href="{% url 'product_detail' review.order_item.product.id %}" class="ms-3 mt-2">Cancel</a>
+  </div>
+</div>
+{% endblock content %}

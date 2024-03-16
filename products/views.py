@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect, Http404, HttpResponseForbidden
 from django.shortcuts import render, redirect
 from django.views.generic import DetailView, CreateView, UpdateView, DeleteView, TemplateView, ListView
 from .models import Product, Category, Review
-from .forms import ProductAddForm, ProductUpdateForm, ProductImageForm, ProductImageFormSet, ReviewForm
+from .forms import ProductAddForm, ProductUpdateForm, ProductImageForm, ProductImageFormSet, ReviewAddForm, ReviewUpdateForm
 from django.urls import reverse_lazy, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
@@ -219,7 +219,7 @@ class SearchResultsView(ListView):
   
 class ReviewAddView(LoginRequiredMixin, CustomerGroupRequiredMixin, CreateView):
   model = Review
-  form_class = ReviewForm
+  form_class = ReviewAddForm
   template_name = 'reviews/add.html'
 
   def dispatch(self, request, *args, **kwargs):
@@ -244,11 +244,63 @@ class ReviewAddView(LoginRequiredMixin, CustomerGroupRequiredMixin, CreateView):
 
   def form_invalid(self, form):
     error_messages = []
-    for fiedl, errors in form.errors.items():
+    for field, errors in form.errors.items():
       for error in errors:
         error_messages.append(f"{field}: {error}")
     messages.error(self.request, "\n".join(error_messages))
     return super().form_invalid(form)
       
+  def get_success_url(self):
+    return reverse_lazy('product_detail', kwargs={'pk': self.object.order_item.product.id})
+
+
+class ReviewUpdateView(LoginRequiredMixin, CustomerGroupRequiredMixin, UpdateView):
+  model = Review
+  template_name = 'reviews/edit.html'
+  form_class = ReviewUpdateForm
+  pk_url_kwarg = 'review_id' # override django's generic views identifier
+
+  def dispatch(self, request, *args, **kwargs):
+    self.object = self.get_object()
+    if request.user != self.object.user:
+      messages.error(request, 'You are not authorized to edit this review.')
+      return HttpResponseRedirect(self.get_success_url())
+    return super().dispatch(request, *args, **kwargs)
+
+  def form_valid(self, form):
+    form.instance.user = self.request.user
+    messages.success(self.request, 'Review updated successfully!')
+    return super().form_valid(form)
+
+  def form_invalid(self, form):
+    error_messages = []
+    for field, errors in form.errors.items():
+      for error in errors:
+        error_messages.append(f"{field}: {error}")
+    messages.error(self.request, "\n".join(error_messages))
+    return super().form_invalid(form)
+
+  def get_success_url(self):
+    return reverse_lazy('product_detail', kwargs={'pk': self.object.order_item.product.id})
+
+
+class ReviewDeleteView(LoginRequiredMixin, CustomerGroupRequiredMixin, DeleteView):
+  model = Review
+  template_name = 'reviews/delete.html'
+  pk_url_kwarg = 'review_id'
+
+  def dispatch(self, request, *args, **kwargs):
+    self.object = self.get_object()
+    if request.user != self.object.user:
+      messages.error(request, 'You are not authorized to delete this review.')
+      return HttpResponseRedirect(reverse('product_detail', kwargs={'pk': self.object.order_item.product.id}))
+    return super().dispatch(request, *args, **kwargs)
+
+  def delete(self, request, *args, **kwargs):
+    response = super().delete(request, *args, **kwargs)
+    if response.status_code == 302:
+      messages.success(request, 'Review deleted successfully!')
+    return response
+
   def get_success_url(self):
     return reverse_lazy('product_detail', kwargs={'pk': self.object.order_item.product.id})

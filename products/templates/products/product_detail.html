@@ -66,8 +66,8 @@
             <li class="list-group-item" style="color: var(--text-color);">
               {% if user == review.user %}
                 <div>
-                  <a href="#">Edit</a>
-                  <a href="#" class="text-danger ms-1">Delete</a>
+                  <a href="{% url 'review_update' review.id %}">Edit</a>
+                  <a href="{% url 'review_delete' review.id %}" class="text-danger ms-1">Delete</a>
                 </div>
               {% endif %}
               <div>

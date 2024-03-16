@@ -58,7 +58,7 @@ class ProductUpdateForm(ProductFormBase):
   pass
 
 
-class ReviewForm(forms.ModelForm):
+class ReviewBaseForm(forms.ModelForm):
   class Meta:
     model = Review
     fields = ['rating', 'review']
@@ -71,3 +71,11 @@ class ReviewForm(forms.ModelForm):
     if self.order_item:
       self.instance.order_item = self.order_item
     return super().save(commit)
+
+
+class ReviewAddForm(ReviewBaseForm):
+  pass
+
+
+class ReviewUpdateForm(ReviewBaseForm):
+  pass
