@@ -99,6 +99,7 @@ Our Django Ecommerce Site provides the following functionalites:
 - **Shopping Cart:** Users can add products to their shopping cart, review their selections, and proceed to checkout seamlessly.
 - **Order Management:** Both store owners and customers can manage orders, view order details and easily cancel orders if necessary.
 - **Payment Gateway Integration:** Seamlessly integrate the popular payment gateway eSewa to facilitate secure online transactions.
+- **Ratings and Reviews:** Users can provide ratings and write reviews for products they have purchased.
 
 
 ## Contact
