@@ -15,13 +15,20 @@ from orders.models import OrderItem
 class ProductDetailView(DetailView):
   model = Product
   context_object_name = 'product'
-  template_name = 'products\product_detail.html'
+  template_name = 'products/product_detail.html'
 
   def get_context_data(self, **kwargs):
     context = super().get_context_data(**kwargs)
     product = self.get_object()
     reviews = Review.objects.filter(order_item__product=product).order_by('-created_at') # '-' for descending order
     context['reviews'] = reviews
+
+    if product.images.exists():
+      product.primary_image_url = product.images.first().image.url
+    else:
+      product.primary_image_url = None
+      
+    context['primary_image'] = product.primary_image_url
     return context
   
 

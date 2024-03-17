@@ -263,7 +263,7 @@ class BaseStoreDashboard(TemplateView):
     context = super().get_context_data(**kwargs)
     context['products'] = self.get_queryset()
  
-    # displaying images
+    # displaying primary image
     for product in context['products']:
       if product.images.exists():
         product.primary_image_url = product.images.first().image.url
