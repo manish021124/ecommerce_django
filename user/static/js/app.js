@@ -1,5 +1,6 @@
 // fetch the initial cart count 
 document.addEventListener('DOMContentLoaded', function() {
+  const body = document.body;
   const cartCounts = document.querySelectorAll('.cart-number');
   const toggleSwitch = document.getElementById("toggleswitch");
   const gyapuHead = document.getElementById("gyapu-head");
@@ -15,17 +16,30 @@ document.addEventListener('DOMContentLoaded', function() {
       console.error('Error fetching cart count:', error);
     });
 
-    toggleSwitch.addEventListener('change', function() {
-      nightMode();
-    });
-
-    // check local storage on page load
-    let nightModeEnabled = localStorage.getItem("nightModeEnabled");
-    if (nightModeEnabled === "true") {
-      document.body.classList.add("nightmode");
+  function nightMode(){      
+    body.classList.toggle("nightmode");
+    if(body.classList.contains("nightmode")) {
       gyapuHead.src = "/static/images/gyapu-header-nightmode.svg";
       toggleSwitch.style.backgroundImage = 'url("/static/images/moon.svg")';
+      // store night mode state in local storage 
+      localStorage.setItem("nightModeEnabled", "true");
+    } else {
+      gyapuHead.src = "/static/images/gyapu-header-lightmode.svg";
+      toggleSwitch.style.backgroundImage = 'url("/static/images/sun.svg")';
+      // remove night mode state from local storage 
+      localStorage.removeItem("nightModeEnabled");
     }
+  }
+
+  // check local storage on page load
+  const nightModeEnabled = localStorage.getItem("nightModeEnabled") === "true";
+  if (nightModeEnabled) {
+    nightMode();
+  }
+
+  toggleSwitch.addEventListener('change', function() {
+    nightMode();
+  });
 });
 
 window.onscroll = function () { scrollShowNavbar() };
@@ -39,24 +53,6 @@ function scrollShowNavbar() {
   } else {
     nav.style.position = "static";
     nav.style.marginTop = "0";
-  }
-}
-
-function nightMode(){
-  const toggleSwitch = document.getElementById("toggleswitch");
-  const gyapuHead = document.getElementById("gyapu-head");
-  
-  document.body.classList.toggle("nightmode");
-  if(document.body.classList.contains("nightmode")) {
-    gyapuHead.src = "/static/images/gyapu-header-nightmode.svg";
-    toggleSwitch.style.backgroundImage = 'url("/static/images/moon.svg")';
-    // store night mode state in local storage 
-    localStorage.setItem("nightModeEnabled", "true");
-  } else {
-    gyapuHead.src = "/static/images/gyapu-header-lightmode.svg";
-    toggleSwitch.style.backgroundImage = 'url("/static/images/sun.svg")';
-    // remove night mode state from local storage 
-    localStorage.removeItem("nightModeEnabled");
   }
 }
 
