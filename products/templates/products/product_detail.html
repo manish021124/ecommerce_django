@@ -4,12 +4,16 @@
 
 {% block link %}
 <style>
-  :root{
+  :root {
     --textColor: #707B8E;
   }
   
-  .nightmode{
+  .nightmode {
     --textColor: #BEC3CA;
+  }
+
+  .active-image {
+    border: 1px solid #40E0D0;
   }
 </style>
 {% endblock link %}
@@ -22,7 +26,7 @@
       <div class="row">
         <div class="{% if product.images.all %}col{% else %}d-none{% endif %}">
           <div class="row">
-            <div>
+            <div id="primary-image">
               {% if primary_image %}
               <img src="{{ primary_image }}" alt="{{ product.name }}" class="img-fluid" style="min-width:300px;">
               {% endif %}
@@ -30,9 +34,9 @@
           </div>
           {% if product.images.count > 1 %}
             <div class="row">
-              <div class="d-flex flex-row flex-wrap">
+              <div class="d-flex flex-row flex-wrap" id="secondary-images">
                 {% for image in product.images.all %}
-                  <div>
+                  <div onclick="changeImage(event)" class="secondary-image">
                     <img class="productimage" src="{{ image.image.url }}" alt="{{ product.name }}" width="80px" height="80px">
                   </div>
                 {% endfor %}
@@ -107,3 +111,37 @@
     {% endif %}
   {% endif %}
 {% endblock content %}
+
+{% block scripts %}
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const secondaryImages = document.querySelectorAll('.secondary-image');
+    const primaryImg = document.querySelector('#primary-image img');
+
+    secondaryImages.forEach(imageDiv => {
+      const secondaryImg = imageDiv.querySelector('img');
+      if (secondaryImg.getAttribute('src') === primaryImg.getAttribute('src')) {
+        imageDiv.classList.add('active-image');
+      }
+    });
+  });
+
+  function changeImage(event){
+    const currentDiv = event.currentTarget;
+    const primaryImg = document.querySelector('#primary-image img');
+    let currentImg = currentDiv.querySelector('img');
+    let primaryImgSrc = primaryImg.getAttribute('src');
+    let currentImgSrc = currentImg.getAttribute('src');
+
+    if(primaryImgSrc !== currentImgSrc) {
+      primaryImg.setAttribute('src', currentImgSrc);
+    }
+
+    const secondaryImages = document.querySelectorAll('.secondary-image');
+    secondaryImages.forEach(image => {
+      image.classList.remove('active-image');
+    });
+    currentDiv.classList.add('active-image');
+  }
+</script>
+{% endblock scripts %}
