@@ -21,14 +21,16 @@ class ProductDetailView(DetailView):
     context = super().get_context_data(**kwargs)
     product = self.get_object()
     reviews = Review.objects.filter(order_item__product=product).order_by('-created_at') # '-' for descending order
-    context['reviews'] = reviews
-
+    rating_range = range(1, 6)
+    
     if product.images.exists():
       product.primary_image_url = product.images.first().image.url
     else:
       product.primary_image_url = None
-      
+
+    context['reviews'] = reviews
     context['primary_image'] = product.primary_image_url
+    context['rating_range'] = rating_range
     return context
   
 
