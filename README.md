@@ -106,6 +106,11 @@ Our Django Ecommerce Site provides the following functionalites:
 
 You can watch video demonstration of this site [here](https://www.loom.com/share/2592c9c7a71040bfa323ea9663cbab9c?sid=dc397846-9ada-4324-aa01-e5f627a3ecf6).
 
+**Updates not available in Video Demonstration**  
+
+- Product Page Updation
+- Ratings and Reviews
+
 
 ## Contact
 
