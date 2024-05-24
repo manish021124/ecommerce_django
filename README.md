@@ -1,13 +1,13 @@
 # Django Ecommerce Site
 
-Welcome to our Django Ecommerce Site! This README document will guide you through setting up and using to our project.
+Welcome to our Django Ecommerce Site! This README document will guide you through the setup and usage of our project.
 
 
 ## Installation
 
 To install and run our Django Ecommerce Site, follow these steps:
 
-1. Clone the repository to your local machine.  
+1. Clone the repository to your local machine:  
 ```
 git clone https://github.com/manish021124/ecommerce_django.git
 ```
@@ -33,12 +33,12 @@ venv\Scripts\activate
 source venv/bin/activate
 ```
 
-5. Install dependencies  
+5. Install dependencies:  
 ```
 pip install -r requirements.txt
 ```
 
-6. Perform database migrations  
+6. Perform database migrations:  
 ```
 python manage.py migrate
 ```
@@ -56,7 +56,7 @@ python manage.py runserver
 9. Open your web browser and navigte to 'http://localhost:8000' to access the site.
 
 
-## Obtain Google OAuth2 credentials
+## Google OAuth2 Setup
 
 1. **Create a project in Google Developer Console**  
 - Go to the [Google Developer Console](https://console.developers.google.com/).
@@ -78,7 +78,7 @@ GOOGLE_OAUTH2_CLIENT_SECRET="your_client_secret"
 By following these steps, you'll have set up Google OAuth2 authentication for your Django project. Users can now authenticate using their Google accounts when accessing your application.
 
 
-## Test Login Credentials of eSewa
+## Test Login Credentials for eSewa
 
 You can use the following test credentials to log in to eSewa for testing purposes:
 
@@ -108,3 +108,6 @@ If you have any questions or suggestions regarding our Django Ecommerce Site, fe
 
 
 **Frontend:** https://manish021124.github.io/gyapu-e-commerce_site/
+
+
+You can watch video demonstration of this site [Here](https://www.loom.com/share/2592c9c7a71040bfa323ea9663cbab9c?sid=dc397846-9ada-4324-aa01-e5f627a3ecf6).
