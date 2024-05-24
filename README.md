@@ -102,12 +102,14 @@ Our Django Ecommerce Site provides the following functionalites:
 - **Ratings and Reviews:** Users can provide ratings and write reviews for products they have purchased.
 
 
+## Video Demonstration
+
+You can watch video demonstration of this site [here](https://www.loom.com/share/2592c9c7a71040bfa323ea9663cbab9c?sid=dc397846-9ada-4324-aa01-e5f627a3ecf6).
+
+
 ## Contact
 
 If you have any questions or suggestions regarding our Django Ecommerce Site, feel free to contact us at maneeshbalami@gmail.com.
 
 
 **Frontend:** https://manish021124.github.io/gyapu-e-commerce_site/
-
-
-You can watch video demonstration of this site [here](https://www.loom.com/share/2592c9c7a71040bfa323ea9663cbab9c?sid=dc397846-9ada-4324-aa01-e5f627a3ecf6).
