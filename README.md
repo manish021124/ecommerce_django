@@ -110,4 +110,4 @@ If you have any questions or suggestions regarding our Django Ecommerce Site, fe
 **Frontend:** https://manish021124.github.io/gyapu-e-commerce_site/
 
 
-You can watch video demonstration of this site [Here](https://www.loom.com/share/2592c9c7a71040bfa323ea9663cbab9c?sid=dc397846-9ada-4324-aa01-e5f627a3ecf6).
+You can watch video demonstration of this site [here](https://www.loom.com/share/2592c9c7a71040bfa323ea9663cbab9c?sid=dc397846-9ada-4324-aa01-e5f627a3ecf6).
